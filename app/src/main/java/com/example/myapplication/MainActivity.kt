@@ -13,9 +13,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        cameraButton.setOnClickListener { takePhoto()}
+        cameraButton.setOnClickListener { takePhoto() }
         imageButton.setOnClickListener { pickFromGallery() }
     }
+
     val GALLERY_REQUEST_CODE = 1
     private fun pickFromGallery() {
         //Create an Intent with action as ACTION_PICK
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         // Launching the Intent
         startActivityForResult(intent, GALLERY_REQUEST_CODE)
     }
+
     val REQUEST_IMAGE_CAPTURE = 1
 
     private fun takePhoto() {
