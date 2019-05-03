@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -135,6 +136,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    fun transitToAStar(@Suppress("UNUSED_PARAMETER") view: View) {
+        val intent = Intent(this, AStarMainActivity::class.java)
+        startActivity(intent)
+    }
 
 }

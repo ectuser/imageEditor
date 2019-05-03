@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="hint">number of cells</string>
+    <string name="width_string">Width:</string>
+    <string name="height_string">Height:</string>
+    <string name="create_string">Create</string>
+    <string-array name="heuristics">
+        <item>Manhattan Distance</item>
+        <item>Diagonal Distance</item>
+        <item>Euclidean Distance</item>
+    </string-array>
+    <string name="movement_option1">Movement in 4 directions</string>
+    <string name="movement_option2">Movement in 8 directions</string>
+    <string name="movement_option3">Movement in 8 directions if a corner isn\'t blocked</string>
+    <string name="run_string">Run</string>
+    <string name="clear_path_string">Clear path</string>
+    <string name="clear_grid_string">Clear grid</string>
 </resources>
