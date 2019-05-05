@@ -70,7 +70,7 @@
             android:layout_height="wrap_content" android:id="@+id/guideline4"
             app:layout_constraintGuide_percent="0.6"/>
     <Button
-            android:text="@string/create_string"
+            android:text="@string/create_grid_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/createGridButton"

@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
     private val IMAGE_CAPTURE_CODE = 1001
     var image_uri: Uri? = null
     var REQ_CODE_FOR_ACTION: Int = 0
+    val edit = EditImage()
+    var initialHeight = 0
 
 //    private val image = OpenImage()
 
@@ -38,6 +40,8 @@ class MainActivity : AppCompatActivity() {
         cameraButton.setOnClickListener {
             checkPermissionsForCamera()
         }
+
+        initialHeight = mainImage.layoutParams.height
     }
 
 
@@ -142,6 +146,11 @@ class MainActivity : AppCompatActivity() {
             //set image captured to image view
             mainImage.setImageURI(image_uri)
         }
+    }
+
+    // JUST A WRAPPER FUNCTION FOR SCALING
+    fun getScale(@Suppress("UNUSED_PARAMETER") view: View) {
+        edit.scale(mainImage, scaleSpinner.selectedItem.toString(), initialHeight)
     }
 
     // DMITRY'S FUNCTION TO FUCK SOME BITCHES USING A*
