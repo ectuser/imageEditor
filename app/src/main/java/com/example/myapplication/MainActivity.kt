@@ -41,6 +41,11 @@ class MainActivity : AppCompatActivity() {
             checkPermissionsForCamera()
         }
 
+        @Suppress("DEPRECATION")
+        mainImage.layoutParams.width = windowManager.defaultDisplay.width / 2
+        @Suppress("DEPRECATION")
+        mainImage.layoutParams.height = windowManager.defaultDisplay.height / 2
+
         initialHeight = mainImage.layoutParams.height
     }
 

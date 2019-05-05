@@ -31,4 +31,5 @@
     <string name="clear_path_string">Clear path</string>
     <string name="clear_grid_string">Clear grid</string>
     <string name="scale_string">Scale</string>
+    <string name="algorithms_string">Algorithms</string>
 </resources>
