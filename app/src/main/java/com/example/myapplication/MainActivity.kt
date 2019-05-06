@@ -6,6 +6,8 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,16 +17,15 @@ import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
-
 class MainActivity : AppCompatActivity() {
 
     private val PERMISSION_CODE = 1000
     private val IMAGE_PICK_CODE = 1000
     private val IMAGE_CAPTURE_CODE = 1001
-    var image_uri: Uri? = null
-    var REQ_CODE_FOR_ACTION: Int = 0
-    val edit = EditImage()
-    var initialHeight = 0
+    private var image_uri: Uri? = null
+    private var REQ_CODE_FOR_ACTION: Int = 0
+    private val edit = EditImage()
+    private var initialHeight = 0
 
 //    private val image = OpenImage()
 
@@ -47,8 +48,10 @@ class MainActivity : AppCompatActivity() {
         mainImage.layoutParams.height = windowManager.defaultDisplay.height / 2
 
         initialHeight = mainImage.layoutParams.height
-    }
 
+        // 100% scale by default
+        scaleSpinner.setSelection(2)
+    }
 
     // SO NIGGAS THAT'S MY FUCKING CHECK FOR PERMISSIONS OK?
     private fun checkPermissionsForGallery(){
@@ -105,11 +108,11 @@ class MainActivity : AppCompatActivity() {
         //called when user presses ALLOW or DENY from Permission Request Popup
         when(requestCode){
             PERMISSION_CODE -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && REQ_CODE_FOR_ACTION == 2001) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && REQ_CODE_FOR_ACTION == 2001) {
                     //permission from popup was granted
                     openCamera()
                 }
-                else if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && REQ_CODE_FOR_ACTION == 2002) {
+                else if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && REQ_CODE_FOR_ACTION == 2002) {
                     //permission from popup was granted
                     pickImageFromGallery()
                 }
@@ -151,6 +154,13 @@ class MainActivity : AppCompatActivity() {
             //set image captured to image view
             mainImage.setImageURI(image_uri)
         }
+
+        // image compression
+        var bitmap = (mainImage.drawable as BitmapDrawable).bitmap
+        while (bitmap.width + bitmap.height > 5000) {
+            bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.width * 0.9).toInt(), (bitmap.height * 0.9).toInt(), false)
+        }
+        mainImage.setImageBitmap(bitmap)
     }
 
     // JUST A WRAPPER FUNCTION FOR SCALING
