@@ -155,9 +155,13 @@ class MainActivity : AppCompatActivity() {
             mainImage.setImageURI(image_uri)
         }
 
-        // image compression
+       compressImage()
+    }
+
+    // IMAGE COMPRESSION
+    private fun compressImage() {
         var bitmap = (mainImage.drawable as BitmapDrawable).bitmap
-        while (bitmap.width + bitmap.height > 5000) {
+        while (bitmap.width * bitmap.height > 6e6) {
             bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.width * 0.9).toInt(), (bitmap.height * 0.9).toInt(), false)
         }
         mainImage.setImageBitmap(bitmap)
