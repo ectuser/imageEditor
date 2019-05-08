@@ -16,6 +16,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import android.graphics.BitmapFactory
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -160,11 +163,36 @@ class MainActivity : AppCompatActivity() {
 
     // IMAGE COMPRESSION
     private fun compressImage() {
-        var bitmap = (mainImage.drawable as BitmapDrawable).bitmap
-        while (bitmap.width * bitmap.height > 6e6) {
-            bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.width * 0.9).toInt(), (bitmap.height * 0.9).toInt(), false)
+        // First decode with inJustDecodeBounds=true to check dimensions
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeResource(resources, R.id.mainImage, options)
+
+        // Calculate inSampleSize
+
+        val height = options.outHeight
+        val width = options.outWidth
+        val reqHeight = 2048
+        val reqWidth = 1536
+        var inSampleSize : Int
+
+        if (height > reqHeight || width > reqWidth) {
+
+            // Calculate ratios of height and width to requested height and width
+            val heightRatio = Math.round(height.toFloat() / reqHeight as Float)
+            val widthRatio = Math.round(width.toFloat() / reqWidth as Float)
+
+            // Choose the smallest ratio as inSampleSize value, this will guarantee
+            // a final image with both dimensions larger than or equal to the
+            // requested height and width.
+            inSampleSize = if (heightRatio < widthRatio) heightRatio else widthRatio
+            options.inSampleSize = inSampleSize
         }
-        mainImage.setImageBitmap(bitmap)
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false
+
+        BitmapFactory.decodeResource(resources, R.id.mainImage, options)
     }
 
     // JUST A WRAPPER FUNCTION FOR SCALING
