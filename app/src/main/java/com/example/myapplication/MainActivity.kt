@@ -16,9 +16,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
-import android.graphics.BitmapFactory
-
-
+import kotlin.math.min
 
 class MainActivity : AppCompatActivity() {
 
@@ -163,36 +161,19 @@ class MainActivity : AppCompatActivity() {
 
     // IMAGE COMPRESSION
     private fun compressImage() {
-        // First decode with inJustDecodeBounds=true to check dimensions
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeResource(resources, R.id.mainImage, options)
-
-        // Calculate inSampleSize
-
-        val height = options.outHeight
-        val width = options.outWidth
         val reqHeight = 2048
         val reqWidth = 1536
-        var inSampleSize : Int
+        val compressCoefficient: Int
+        var bitmap = (mainImage.drawable as BitmapDrawable).bitmap
 
-        if (height > reqHeight || width > reqWidth) {
-
-            // Calculate ratios of height and width to requested height and width
-            val heightRatio = Math.round(height.toFloat() / reqHeight as Float)
-            val widthRatio = Math.round(width.toFloat() / reqWidth as Float)
-
-            // Choose the smallest ratio as inSampleSize value, this will guarantee
-            // a final image with both dimensions larger than or equal to the
-            // requested height and width.
-            inSampleSize = if (heightRatio < widthRatio) heightRatio else widthRatio
-            options.inSampleSize = inSampleSize
+        if (bitmap.width > reqWidth || bitmap.height > reqHeight) {
+            compressCoefficient = min(bitmap.width / reqWidth, bitmap.height / reqHeight)
+            bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.width / compressCoefficient,
+                bitmap.height / compressCoefficient, false)
+            mainImage.setImageBitmap(bitmap)
         }
 
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false
-
-        BitmapFactory.decodeResource(resources, R.id.mainImage, options)
+        Toast.makeText(this, "${bitmap.width} ${bitmap.height}", Toast.LENGTH_SHORT).show()
     }
 
     // JUST A WRAPPER FUNCTION FOR SCALING
