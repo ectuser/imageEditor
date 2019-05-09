@@ -11,12 +11,16 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 import kotlin.math.min
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -156,24 +160,32 @@ class MainActivity : AppCompatActivity() {
             mainImage.setImageURI(image_uri)
         }
 
-       compressImage()
+        compressImage()
     }
 
     // IMAGE COMPRESSION
     private fun compressImage() {
-        val reqHeight = 2048
-        val reqWidth = 1536
-        val compressCoefficient: Int
+        val reqHeight = 1500
+        val reqWidth = 1500
+        val compressCoefficient: Double
         var bitmap = (mainImage.drawable as BitmapDrawable).bitmap
 
         if (bitmap.width > reqWidth || bitmap.height > reqHeight) {
-            compressCoefficient = min(bitmap.width / reqWidth, bitmap.height / reqHeight)
-            bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.width / compressCoefficient,
-                bitmap.height / compressCoefficient, false)
-            mainImage.setImageBitmap(bitmap)
-        }
+            compressCoefficient = min(bitmap.width.toDouble() / reqWidth.toDouble(),
+                bitmap.height.toDouble() / reqHeight.toDouble())
 
-        Toast.makeText(this, "${bitmap.width} ${bitmap.height}", Toast.LENGTH_SHORT).show()
+            if (compressCoefficient > 1) {
+                bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.width.toDouble() / compressCoefficient).toInt(),
+                    (bitmap.height.toDouble() / compressCoefficient).toInt(), false)
+                mainImage.setImageBitmap(bitmap)
+            }
+        }
+    }
+
+    fun saveImage(@Suppress("UNUSED_PARAMETER") view: View) {
+        val root = File("${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}" +
+                "${File.separator}imageEditor${File.separator}")
+        root.mkdir()
     }
 
     // JUST A WRAPPER FUNCTION FOR SCALING

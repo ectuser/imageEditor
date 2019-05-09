@@ -102,5 +102,5 @@
             app:layout_constraintBottom_toTopOf="@+id/imgScroll" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp" android:layout_marginTop="8dp"/>
+            android:layout_marginStart="8dp" android:layout_marginTop="8dp" android:onClick="saveImage"/>
 </android.support.constraint.ConstraintLayout>
