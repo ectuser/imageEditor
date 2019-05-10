@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,6 +19,9 @@ import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
+import java.io.FileOutputStream
+import java.text.DateFormat.getDateTimeInstance
+import java.util.*
 import kotlin.math.min
 
 
@@ -165,8 +169,8 @@ class MainActivity : AppCompatActivity() {
 
     // IMAGE COMPRESSION
     private fun compressImage() {
-        val reqHeight = 1500
-        val reqWidth = 1500
+        val reqHeight = 2000
+        val reqWidth = 2000
         val compressCoefficient: Double
         var bitmap = (mainImage.drawable as BitmapDrawable).bitmap
 
@@ -182,10 +186,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // SAVING YOUR EDITED IMAGE TO A SPECIFIC FOLDER
     fun saveImage(@Suppress("UNUSED_PARAMETER") view: View) {
-        val root = File("${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}" +
+        // Creating new folder
+        val folder = File("${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}" +
                 "${File.separator}imageEditor${File.separator}")
-        root.mkdir()
+        folder.mkdir()
+
+        val dateFormat = getDateTimeInstance()
+        val currentDate = dateFormat.format(Date())
+        val file = File(folder, "Img[$currentDate].jpg")
+        val outputStream = FileOutputStream(file)
+        val bitmap = (mainImage.drawable as BitmapDrawable).bitmap
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        outputStream.flush()
+        outputStream.close()
+        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
+
+        // Forcing the system to see your new image
+        val folderArray = arrayOf(folder.path)
+        val fileArray = arrayOf(file.path)
+        MediaScannerConnection.scanFile(this, folderArray, fileArray, null)
     }
 
     // JUST A WRAPPER FUNCTION FOR SCALING
