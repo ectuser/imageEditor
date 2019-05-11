@@ -165,6 +165,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         compressImage()
+        edit.filter(mainImage)
     }
 
     // IMAGE COMPRESSION
