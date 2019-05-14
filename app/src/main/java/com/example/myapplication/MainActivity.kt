@@ -33,8 +33,9 @@ class MainActivity : AppCompatActivity() {
     private val IMAGE_CAPTURE_CODE = 1001
     private var image_uri: Uri? = null
     private var REQ_CODE_FOR_ACTION: Int = 0
-    private val edit = EditImage()
     private var initialHeight = 0
+    private val edit = EditImage()
+    private val actionBut = ActionsWithButtons()
 
 //    private val image = OpenImage()
 
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         scaleSpinner.setSelection(2)
 
         // SHOW FILTERS BUTTONS
-        filtersButton.setOnClickListener{ edit.filterClick(firstFilter, secondFilter, thirdFilter, cameraButton, imageButton) }
+        filtersButton.setOnClickListener{ actionBut.filterClick(firstFilter, secondFilter, thirdFilter, cameraButton, imageButton) }
         // NEGATIVE FILTER
         firstFilter.setOnClickListener { edit.filter(mainImage, 1) }
     }
