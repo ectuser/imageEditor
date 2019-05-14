@@ -60,6 +60,11 @@ class MainActivity : AppCompatActivity() {
 
         // 100% scale by default
         scaleSpinner.setSelection(2)
+
+        // SHOW FILTERS BUTTONS
+        filtersButton.setOnClickListener{ edit.filterClick(firstFilter, secondFilter, thirdFilter, cameraButton, imageButton) }
+        // NEGATIVE FILTER
+        firstFilter.setOnClickListener { edit.filter(mainImage, 1) }
     }
 
     // SO NIGGAS THAT'S MY FUCKING CHECK FOR PERMISSIONS OK?
@@ -165,7 +170,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         compressImage()
-        edit.filter(mainImage)
+
+
+        // SHOW BUTTON "FILTERS":
+        filtersButton.visibility = View.VISIBLE
     }
 
     // IMAGE COMPRESSION

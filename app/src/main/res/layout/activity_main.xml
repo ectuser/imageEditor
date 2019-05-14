@@ -76,7 +76,8 @@
             android:layout_marginStart="8dp"
             android:onClick="getScale" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/imgScroll"/>
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/imgScroll"
+            app:layout_constraintHorizontal_bias="0.524" app:layout_constraintVertical_bias="0.529"/>
     <android.support.constraint.Guideline
             android:orientation="horizontal"
             android:layout_width="wrap_content"
@@ -103,4 +104,47 @@
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp" android:layout_marginTop="8dp" android:onClick="saveImage"/>
+    <Button
+            android:text="filters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/filtersButton" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toEndOf="@+id/cameraButton"
+            android:layout_marginStart="8dp" app:layout_constraintTop_toBottomOf="@+id/imgScroll"
+            android:layout_marginLeft="8dp" app:layout_constraintEnd_toStartOf="@+id/imageButton"
+            android:layout_marginEnd="8dp" android:layout_marginRight="8dp" app:layout_constraintHorizontal_bias="0.523"
+            app:layout_constraintVertical_bias="1.0" android:visibility="invisible"/>
+    <Button
+            android:text="Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/firstFilter" app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="44dp"
+            android:layout_marginStart="44dp" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline11" android:visibility="invisible"
+            app:layout_constraintVertical_bias="0.231" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
+            app:layout_constraintHorizontal_bias="0.0"/>
+    <Button
+            android:text="Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/secondFilter" app:layout_constraintStart_toEndOf="@+id/firstFilter"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline11" app:layout_constraintEnd_toStartOf="@+id/thirdFilter"
+            android:layout_marginEnd="8dp" android:layout_marginRight="8dp" android:visibility="invisible"
+            app:layout_constraintHorizontal_bias="0.645" app:layout_constraintVertical_bias="0.231"/>
+    <Button
+            android:text="Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/thirdFilter" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="56dp"
+            android:layout_marginRight="56dp" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline11" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent" android:visibility="invisible"
+            app:layout_constraintVertical_bias="0.231" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
+            app:layout_constraintHorizontal_bias="1.0"/>
 </android.support.constraint.ConstraintLayout>
