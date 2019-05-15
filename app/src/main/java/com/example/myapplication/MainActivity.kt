@@ -7,6 +7,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -15,6 +16,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -221,4 +223,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun transitToInterpolation(@Suppress("UNUSED_PARAMETER") view: View) {
+        val intent = Intent(this, InterpolationActivity::class.java)
+        startActivity(intent)
+    }
 }
