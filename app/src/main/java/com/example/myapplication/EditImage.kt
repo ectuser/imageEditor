@@ -1,11 +1,6 @@
 package com.example.myapplication
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
-import android.widget.Toast
-import java.lang.Math.pow
 import kotlin.math.roundToInt
 
 
