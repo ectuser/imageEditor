@@ -4,6 +4,7 @@ package com.example.myapplication
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -15,6 +16,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     private var initialHeight = 0
     private val edit = EditImage()
     private val actionBut = ActionsWithButtons()
+    private var MAIN_COUNTER = 0
 
 //    private val image = OpenImage()
 
@@ -45,12 +48,8 @@ class MainActivity : AppCompatActivity() {
 
 
         //button click
-        imageButton.setOnClickListener {
-            checkPermissionsForGallery()
-        }
-        cameraButton.setOnClickListener {
-            checkPermissionsForCamera()
-        }
+        imageButton.setOnClickListener { checkPermissionsForGallery() }
+        cameraButton.setOnClickListener { checkPermissionsForCamera() }
 
         @Suppress("DEPRECATION")
         mainImage.layoutParams.width = windowManager.defaultDisplay.width / 2
@@ -63,9 +62,14 @@ class MainActivity : AppCompatActivity() {
         scaleSpinner.setSelection(2)
 
         // SHOW FILTERS BUTTONS
-        filtersButton.setOnClickListener{ actionBut.filterClick(firstFilter, secondFilter, thirdFilter, cameraButton, imageButton) }
+        filtersButton.setOnClickListener{ actionBut.filterClick(firstFilter, secondFilter, thirdFilter, cameraButton, imageButton, backButton, returnButton) }
         // NEGATIVE FILTER
         firstFilter.setOnClickListener { edit.filter(mainImage, 1) }
+        secondFilter.setOnClickListener { edit.whiteBlack(mainImage) }
+        thirdFilter.setOnClickListener { edit.negative(mainImage) }
+//        button3.setOnClickListener { edit.rotateImage(mainImage) }
+        button3.setOnClickListener { edit.blur(mainImage, textView2) }
+
     }
 
     // SO NIGGAS THAT'S MY FUCKING CHECK FOR PERMISSIONS OK?
@@ -176,6 +180,7 @@ class MainActivity : AppCompatActivity() {
         // SHOW BUTTON "FILTERS":
         filtersButton.visibility = View.VISIBLE
     }
+
 
     // IMAGE COMPRESSION
     private fun compressImage() {
