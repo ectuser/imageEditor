@@ -11,10 +11,7 @@ import android.widget.TextView
 import android.R.attr.x
 import android.R.attr.y
 
-
-
-
-class EditImage{
+class EditImage {
     fun returnImage(mainImage: ImageView, savedBitmap: Bitmap){
         mainImage.setImageBitmap(savedBitmap)
     }
