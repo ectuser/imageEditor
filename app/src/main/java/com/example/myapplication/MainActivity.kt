@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         // NEGATIVE FILTER
         firstFilter.setOnClickListener { edit.filter(mainImage, 1) }
         secondFilter.setOnClickListener { edit.filter(mainImage, 2) }
-        thirdFilter.setOnClickListener { edit.negative(mainImage) }
+        thirdFilter.setOnClickListener { edit.filter(mainImage, 3) }
 //        button3.setOnClickListener { edit.rotateImage(mainImage) }
         button3.setOnClickListener { edit.blur(mainImage, textView2) }
 

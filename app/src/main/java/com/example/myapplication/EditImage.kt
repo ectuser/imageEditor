@@ -24,6 +24,7 @@ class EditImage{
         params.height = (initialHeight * scaleCoefficient).roundToInt()
         mainImage.layoutParams = params
     }
+    // CALL FILTERS FUNCTION
     fun filter(mainImage: ImageView, number : Int){
         var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
         val height = oldBitmap.height
@@ -33,12 +34,16 @@ class EditImage{
         var newBitmapPixelsArray = oldBittmapPixelsArray
         oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height)
 
+        // CALL FILTER
         if (number == 1) {negative(oldBittmapPixelsArray, newBitmapPixelsArray)}
         if (number == 2) {whiteBlack(oldBittmapPixelsArray, newBitmapPixelsArray)}
+        if (number == 3) {red(oldBittmapPixelsArray, newBitmapPixelsArray)}
 
         newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
         mainImage.setImageBitmap(newBitmap)
     }
+
+    // FILTERS BEGIN
     private fun negative(oldBitmapPixelsArray: IntArray, newBitmapPixelsArray: IntArray){
         for (i in oldBitmapPixelsArray.indices) {
             newBitmapPixelsArray[i] = (0xff000000 or (0xffffffff - oldBitmapPixelsArray[i])).toInt()
@@ -52,7 +57,7 @@ class EditImage{
             newBitmapPixelsArray[i] = ((0xff000000) or (red.toLong() shl 16)).toInt()
         }
     }
-    fun whiteBlack(oldBitmapPixelsArray: IntArray, newBitmapPixelsArray: IntArray){
+    private fun whiteBlack(oldBitmapPixelsArray: IntArray, newBitmapPixelsArray: IntArray){
         for (i in oldBitmapPixelsArray.indices){
             var red = (oldBitmapPixelsArray[i] and 0x00ff0000 shr 16) // 8 0 shl
             var green = (oldBitmapPixelsArray[i] and 0x0000ff00 shr 8)
@@ -62,12 +67,9 @@ class EditImage{
             newBitmapPixelsArray[i] = ((0xff000000) or (averageColor.toLong() shl 16) or (averageColor.toLong() shl 8) or (averageColor.toLong() shl 0)).toInt()
         }
     }
-    fun negative(mainImage: ImageView){
-        val colorMatrix = floatArrayOf(1f, 0f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 1f, 0f)
-        val colorFilter = ColorMatrixColorFilter(colorMatrix)
-        mainImage.colorFilter = colorFilter
-    }
+    // FILTERS END
 
+    // Fucking rotation doesn't work
     fun rotateImage(mainImage: ImageView){
         val matrix = Matrix()
 
@@ -80,6 +82,8 @@ class EditImage{
             Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width, scaledBitmap.height, matrix, true)
         mainImage.setImageBitmap(rotatedBitmap)
     }
+
+    // DAMN BLUR
     @SuppressLint("ClickableViewAccessibility")
     fun blur(mainImage: ImageView, textView: TextView){
         mainImage.setOnTouchListener(object : View.OnTouchListener {
