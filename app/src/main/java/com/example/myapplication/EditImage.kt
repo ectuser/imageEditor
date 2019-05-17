@@ -1,17 +1,17 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
+import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import kotlin.math.roundToInt
-import android.graphics.ColorMatrixColorFilter
-import android.graphics.ColorFilter
-import android.graphics.Matrix
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
-import kotlinx.android.synthetic.main.activity_main.*
+import android.R.attr.x
+import android.R.attr.y
+
+
 
 
 class EditImage{
@@ -34,6 +34,8 @@ class EditImage{
         oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height)
 
         if (number == 1) {negative(oldBittmapPixelsArray, newBitmapPixelsArray)}
+        if (number == 2) {whiteBlack(oldBittmapPixelsArray, newBitmapPixelsArray)}
+
         newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
         mainImage.setImageBitmap(newBitmap)
     }
@@ -47,29 +49,29 @@ class EditImage{
             var red = (oldBitmapPixelsArray[i] and 0x00ff0000 shr 16) // 8 0 shl
             var green = (oldBitmapPixelsArray[i] and 0x0000ff00 shr 8)
             var blue = (oldBitmapPixelsArray[i] and 0x000000ff shr 0)
-//            var r =
+            newBitmapPixelsArray[i] = ((0xff000000) or (red.toLong() shl 16)).toInt()
         }
     }
-    fun whiteBlack(mainImage: ImageView){
-        val colorMatrix = floatArrayOf(
-            0.33f, 0.33f, 0.33f, 0f, 1F,
-            0.33f, 0.33f, 0.33f, 0f, 1F,
-            0.33f, 0.33f, 0.33f, 0f, 1F,
-            0f, 0f, 0f, 1f, 0f
-        )
-        val colorFilter = ColorMatrixColorFilter(colorMatrix)
-        mainImage.setColorFilter(colorFilter)
+    fun whiteBlack(oldBitmapPixelsArray: IntArray, newBitmapPixelsArray: IntArray){
+        for (i in oldBitmapPixelsArray.indices){
+            var red = (oldBitmapPixelsArray[i] and 0x00ff0000 shr 16) // 8 0 shl
+            var green = (oldBitmapPixelsArray[i] and 0x0000ff00 shr 8)
+            var blue = (oldBitmapPixelsArray[i] and 0x000000ff shr 0)
+
+            var averageColor = (red + green + blue) / 3
+            newBitmapPixelsArray[i] = ((0xff000000) or (averageColor.toLong() shl 16) or (averageColor.toLong() shl 8) or (averageColor.toLong() shl 0)).toInt()
+        }
     }
     fun negative(mainImage: ImageView){
         val colorMatrix = floatArrayOf(1f, 0f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 1f, 0f)
         val colorFilter = ColorMatrixColorFilter(colorMatrix)
-        mainImage.setColorFilter(colorFilter)
+        mainImage.colorFilter = colorFilter
     }
 
     fun rotateImage(mainImage: ImageView){
         val matrix = Matrix()
 
-        matrix.postRotate(-90F)
+        matrix.postRotate(90F)
 
         val bitmapOrg = (mainImage.drawable as BitmapDrawable).bitmap
         val scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, bitmapOrg.width, bitmapOrg.height, true)
@@ -86,11 +88,33 @@ class EditImage{
                     MotionEvent.ACTION_DOWN -> {
                         var x = event.x
                         var y = event.y
+                        textView.text = "$x | $y"
                         var eps = 30F
 
-                        
+                        var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+                        val height = oldBitmap.height
+                        val width = oldBitmap.width
+                        var oldBittmapPixelsArray = IntArray(width * height)
+                        var newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                        var newBitmapPixelsArray = oldBittmapPixelsArray
+                        oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height)
+                        var count = 0
+                        val array = oldBittmapPixelsArray //массив - донор
+                        val matrix = Array(height) { IntArray(width) } //будущая матрица
+                        for (i in matrix.indices) {
+                            for (j in 0 until matrix[i].size) {
+                                matrix[i][j] = array[count++] //перенос элементов из донора в матрицу
+                            }
+                        }
+                        matrix
+//                        for (row in 0..height)
+//                            for (column in 0..width){
+//                                newBitmapPixelsArray[(row * width) + column] = matrix[row][column]
+//                            }
+//                        newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
+//                        mainImage.setImageBitmap(newBitmap)
+//                        oldBittmapPixelsArray[x.toInt() * y.toInt()] =
 
-                        textView.text = x.toString()
                     }
                 }
 
