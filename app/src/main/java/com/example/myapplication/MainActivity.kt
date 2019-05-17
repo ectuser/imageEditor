@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         secondFilter.setOnClickListener { edit.filter(mainImage, 2) }
         thirdFilter.setOnClickListener { edit.filter(mainImage, 3) }
 //        button3.setOnClickListener { edit.rotateImage(mainImage) }
-        button3.setOnClickListener { edit.blur(mainImage, textView2) }
+        button3.setOnClickListener { edit.blur(mainImage) }
 
     }
 
@@ -236,4 +236,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun transitToInterpolation(@Suppress("UNUSED_PARAMETER") view: View) {
+        val intent = Intent(this, InterpolationActivity::class.java)
+        startActivity(intent)
+    }
 }

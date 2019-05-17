@@ -31,4 +31,9 @@
     <string name="scale_string">Scale</string>
     <string name="save_string">Save</string>
     <string name="algorithms_string">Algorithms</string>
+    <string name="unsharp_mask_string">Unsharp Mask</string>
+    <string name="clear_string">Clear</string>
+    <!--<string name="interpolation_string">Interpolation</string>-->
+    <string name="chain_string">Chain</string>
+    <string name="interpolation_string">interpolation</string>
 </resources>

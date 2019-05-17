@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.R.attr.x
 import android.R.attr.y
 
+
 class EditImage {
     fun returnImage(mainImage: ImageView, savedBitmap: Bitmap){
         mainImage.setImageBitmap(savedBitmap)
@@ -82,14 +83,14 @@ class EditImage {
 
     // DAMN BLUR
     @SuppressLint("ClickableViewAccessibility")
-    fun blur(mainImage: ImageView, textView: TextView){
+    fun blur(mainImage: ImageView){
         mainImage.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 when (event?.action) {
                     MotionEvent.ACTION_DOWN -> {
                         var x = event.x
                         var y = event.y
-                        textView.text = "$x | $y"
+//                        textView.text = "$x | $y"
                         var eps = 30F
 
                         var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap

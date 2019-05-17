@@ -56,13 +56,14 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp" android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:scrollbars="none">
+                android:scrollbars="none" android:id="@+id/imgHorizontalScroll">
             <ImageView
                     app:srcCompat="@mipmap/ic_launcher"
                     android:id="@+id/mainImage"
                     android:scaleType="centerCrop" android:adjustViewBounds="true"
                     android:scrollbars="none" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:contentDescription="TODO"/>
+                    android:contentDescription="TODO"
+            />
         </HorizontalScrollView>
     </ScrollView>
     <Button
@@ -102,7 +103,7 @@
             android:text="@string/save_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button2" android:layout_marginBottom="8dp"
+            android:id="@+id/saveButton" android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/imgScroll" app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="8dp" android:onClick="saveImage" android:layout_marginStart="8dp"
             app:layout_constraintStart_toStartOf="@+id/guideline2" android:layout_marginLeft="8dp"
@@ -184,9 +185,16 @@
             android:layout_marginRight="8dp" android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="@+id/filtersButton"
             app:layout_constraintHorizontal_bias="0.498" app:layout_constraintVertical_bias="0.204"/>
-    <TextView
-            android:text="TextView"
+    <Button
+            android:text="interpolation"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" tools:layout_editor_absoluteY="99dp"
-            tools:layout_editor_absoluteX="24dp" android:id="@+id/textView2"/>
+            android:layout_height="wrap_content"
+            android:id="@+id/suckMyTitsButton" android:layout_marginTop="116dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp" android:onClick="transitToInterpolation"
+            app:layout_constraintHorizontal_bias="0.007" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/guideline11"
+            app:layout_constraintVertical_bias="0.062"/>
 </android.support.constraint.ConstraintLayout>
