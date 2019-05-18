@@ -4,7 +4,6 @@ package com.example.myapplication
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -16,7 +15,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
-import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -36,7 +34,9 @@ class MainActivity : AppCompatActivity() {
     private var image_uri: Uri? = null
     private var REQ_CODE_FOR_ACTION: Int = 0
     private var initialHeight = 0
-    private val edit = EditImage()
+    var RETURN_BITMAP = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+    var BACK_BITMAP = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+    private val edit = EditImage(BACK_BITMAP)
     private val actionBut = ActionsWithButtons()
     private var MAIN_COUNTER = 0
 
@@ -69,6 +69,11 @@ class MainActivity : AppCompatActivity() {
         thirdFilter.setOnClickListener { edit.filter(mainImage, 3) }
 //        button3.setOnClickListener { edit.rotateImage(mainImage) }
         button3.setOnClickListener { edit.blur(mainImage) }
+        returnButton.setOnClickListener { edit.returnImage(mainImage, RETURN_BITMAP) }
+        backButton.setOnClickListener {
+            BACK_BITMAP = edit.returnBackBitmap()
+            edit.returnImage(mainImage, BACK_BITMAP)
+        }
 
     }
 
@@ -174,7 +179,9 @@ class MainActivity : AppCompatActivity() {
             mainImage.setImageURI(image_uri)
         }
 
-        compressImage()
+        RETURN_BITMAP = (mainImage.drawable as BitmapDrawable).bitmap
+
+//        compressImage()
 
 
         // SHOW BUTTON "FILTERS":

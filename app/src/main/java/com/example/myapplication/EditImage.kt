@@ -12,9 +12,13 @@ import android.R.attr.x
 import android.R.attr.y
 
 
-class EditImage {
+class EditImage(BTMP: Bitmap) {
+    var BACK_BITMAP = BTMP
     fun returnImage(mainImage: ImageView, savedBitmap: Bitmap){
         mainImage.setImageBitmap(savedBitmap)
+    }
+    fun returnBackBitmap(): Bitmap {
+        return BACK_BITMAP
     }
     fun scale(mainImage: ImageView, selected: String, initialHeight: Int) {
         val scaleCoefficient = selected.removeRange(selected.length - 1, selected.length).toDouble() / 100
@@ -25,6 +29,7 @@ class EditImage {
     // CALL FILTERS FUNCTION
     fun filter(mainImage: ImageView, number : Int){
         var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+        BACK_BITMAP = oldBitmap
         val height = oldBitmap.height
         val width = oldBitmap.width
         var oldBittmapPixelsArray = IntArray(width * height)
