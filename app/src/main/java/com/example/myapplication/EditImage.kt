@@ -88,14 +88,16 @@ class EditImage(BTMP: Bitmap) {
 
     // DAMN BLUR
     @SuppressLint("ClickableViewAccessibility")
-    fun blur(mainImage: ImageView){
+    fun blur(mainImage: ImageView, coordinates: TextView){
         mainImage.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 when (event?.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        var x = event.x
-                        var y = event.y
-//                        textView.text = "$x | $y"
+                        var x = event.x.toInt()
+                        var y = event.y.toInt()
+                        x = 50
+                        y = 50
+                        coordinates.text = "$x | $y"
                         var eps = 30F
 
                         var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
@@ -113,13 +115,47 @@ class EditImage(BTMP: Bitmap) {
                                 matrix[i][j] = array[count++] //перенос элементов из донора в матрицу
                             }
                         }
-                        matrix
-//                        for (row in 0..height)
-//                            for (column in 0..width){
-//                                newBitmapPixelsArray[(row * width) + column] = matrix[row][column]
-//                            }
-//                        newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
-//                        mainImage.setImageBitmap(newBitmap)
+                        val ys: IntArray = intArrayOf(-1, -1, -1, 0, 0, 0, +1, +1, +1)
+                        val xs: IntArray = intArrayOf(-1, 0, +1, -1, 0, +1, -1, 0, +1)
+                        var redSum = 0
+                        var greenSum = 0
+                        var blueSum = 0
+                        for (i in 0..8){
+                            var red = (matrix[y + ys[i]][x + xs[i]] and 0x00ff0000 shr 16)
+                            var green = (matrix[y + ys[i]][x + xs[i]] and 0x0000ff00 shr 8)
+                            var blue = (matrix[y + ys[i]][x + xs[i]] and 0x000000ff shr 0)
+                            redSum += red
+                            greenSum += green
+                            blueSum += blue
+                        }
+                        redSum /= 9
+                        greenSum /= 9
+                        blueSum /= 9
+//                        var average = (
+//                                matrix[y - 1][x - 1] + matrix[y - 1][x] + matrix[y - 1][x + 1] +
+//                                        matrix[y][x - 1] + matrix[y][x] + matrix[y][x + 1] +
+//                                        matrix[y + 1][x - 1] + matrix[y + 1][x] + matrix[y + 1][x + 1]
+//                                ) / 9
+//                        var average = matrix[y][x]
+//                        var red = (matrix[y][x] and 0x00ff0000 shr 16) // 8 0 shl
+//                        var green = (matrix[y][x] and 0x0000ff00 shr 8)
+//                        var blue = (matrix[y][x] and 0x000000ff shr 0)
+                        matrix[y - 1][x - 1] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                        matrix[y - 1][x] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                        matrix[y - 1][x + 1] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                        matrix[y][x - 1] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                        matrix[y][x] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                        matrix[y][x + 1] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                        matrix[y + 1][x - 1] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                        matrix[y + 1][x] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                        matrix[y + 1][x + 1] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                        for (row in 0 until height){
+                            for (column in 0 until width) {
+                                newBitmapPixelsArray[(row * width) + column] = matrix[row][column]
+                            }
+                        }
+                        newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
+                        mainImage.setImageBitmap(newBitmap)
 //                        oldBittmapPixelsArray[x.toInt() * y.toInt()] =
 
                     }
