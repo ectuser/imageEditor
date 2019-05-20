@@ -1,27 +1,153 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import kotlin.math.roundToInt
 import android.view.MotionEvent
 import android.view.View
-import android.widget.TextView
-import android.R.attr.x
-import android.R.attr.y
+import android.widget.Toast
+import kotlin.math.max
 
 
 class EditImage {
     fun returnImage(mainImage: ImageView, savedBitmap: Bitmap){
         mainImage.setImageBitmap(savedBitmap)
     }
-    fun scale(mainImage: ImageView, selected: String, initialHeight: Int) {
+    fun enlarge(mainImage: ImageView, selected: String, initialHeight: Int) {
         val scaleCoefficient = selected.removeRange(selected.length - 1, selected.length).toDouble() / 100
         val params = mainImage.layoutParams
         params.height = (initialHeight * scaleCoefficient).roundToInt()
         mainImage.layoutParams = params
     }
+
+    @SuppressLint("NewApi")
+    fun scale05x(context: Context, mainImage: ImageView) {
+       // to_do
+    }
+
+    fun scale2x(context: Context, mainImage: ImageView) {
+        try {
+            val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+            val height = oldBitmap.height
+            val width = oldBitmap.width
+            val oldBitmapPixelsArray = IntArray(width * height)
+            val newBitmap = Bitmap.createBitmap(width * 2, height * 2, Bitmap.Config.ARGB_8888)
+            val newBitmapPixelsArray = IntArray(width * 2 * height * 2)
+            oldBitmap.getPixels(oldBitmapPixelsArray, 0, width, 0, 0, width, height)
+
+            for (i in oldBitmapPixelsArray.indices) {
+                newBitmapPixelsArray[i * 2 + (i / width) * width * 2] = oldBitmapPixelsArray[i]
+                newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + 1] = oldBitmapPixelsArray[i]
+                newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2] = oldBitmapPixelsArray[i]
+                newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2 + 1] = oldBitmapPixelsArray[i]
+
+                // smoothing
+                if (i >= width && i <= width * (height - 1) && i % width != 0 && i % width != width - 1) {
+                    val a = oldBitmapPixelsArray[i - width]
+                    val b = oldBitmapPixelsArray[i + 1]
+                    val c = oldBitmapPixelsArray[i - 1]
+                    val d = oldBitmapPixelsArray[i + width]
+
+                    if (c == a && c != d && a != b) {
+                        newBitmapPixelsArray[i * 2 + (i / width) * width * 2] = a
+                    }
+                    if (a == b && a != c && b != d) {
+                        newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + 1] = b
+                    }
+                    if (d == c && d != b && c != a) {
+                        newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2] = c
+                    }
+                    if (b == d && b != a && d != c) {
+                        newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2 + 1] = d
+                    }
+                }
+            }
+
+            newBitmap.setPixels(newBitmapPixelsArray, 0, width * 2, 0, 0, width * 2, height * 2)
+            mainImage.setImageBitmap(newBitmap)
+            Toast.makeText(context, "${newBitmap.width} x ${newBitmap.height}", Toast.LENGTH_SHORT).show()
+        }
+        catch (e: OutOfMemoryError) {
+            Toast.makeText(context, "The image is too large", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun scale3x(context: Context, mainImage: ImageView) {
+        try {
+            val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+            val height = oldBitmap.height
+            val width = oldBitmap.width
+            val oldBitmapPixelsArray = IntArray(width * height)
+            val newBitmap = Bitmap.createBitmap(width * 3, height * 3, Bitmap.Config.ARGB_8888)
+            val newBitmapPixelsArray = IntArray(width * 3 * height * 3)
+            oldBitmap.getPixels(oldBitmapPixelsArray, 0, width, 0, 0, width, height)
+
+            for (i in oldBitmapPixelsArray.indices) {
+                newBitmapPixelsArray[i * 3 + (i / width) * width * 6] = oldBitmapPixelsArray[i]
+                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 1] = oldBitmapPixelsArray[i]
+                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 2] = oldBitmapPixelsArray[i]
+                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3] = oldBitmapPixelsArray[i]
+                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 + 1] = oldBitmapPixelsArray[i]
+                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 + 2] = oldBitmapPixelsArray[i]
+                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2] = oldBitmapPixelsArray[i]
+                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 1] = oldBitmapPixelsArray[i]
+                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 2] = oldBitmapPixelsArray[i]
+
+                // smoothing
+                if (i >= width && i <= width * (height - 1) && i % width != 0 && i % width != width - 1) {
+                    val a = oldBitmapPixelsArray[i - width - 1]
+                    val b = oldBitmapPixelsArray[i - width]
+                    val c = oldBitmapPixelsArray[i - width + 1]
+                    val d = oldBitmapPixelsArray[i - 1]
+                    val e = oldBitmapPixelsArray[i]
+                    val f = oldBitmapPixelsArray[i + 1]
+                    val g = oldBitmapPixelsArray[i + width - 1]
+                    val h = oldBitmapPixelsArray[i + width]
+                    val j = oldBitmapPixelsArray[i + width + 1]
+
+                    if (d == b && d != h && b != f) {
+                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6] = d
+                    }
+                    if ((d == b && d != h && b != f && e != c) ||
+                        (b == f && b != d && f != h && e != a)) {
+                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 1] = b
+                    }
+                    if (b == f && b != d && f != h) {
+                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 2] = f
+                    }
+                    if ((h == d && h != f && d != b && e != a) ||
+                        (d == b && d != h && b != f && e != g)) {
+                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3] = d
+                    }
+                    if ((b == f && b != d && f != h && e != j) ||
+                        (f == h && f != b && h != d && e != c)) {
+                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 + 2] = f
+                    }
+                    if (h == d && h != f && d != b) {
+                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2] = d
+                    }
+                    if ((f == h && f != b && h != d && e != g) ||
+                        (h == d && h != f && d != b && e != j)) {
+                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 1] = h
+                    }
+                    if (f == h && f != b && h != d) {
+                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 2] = f
+                    }
+                }
+            }
+
+            newBitmap.setPixels(newBitmapPixelsArray, 0, width * 3, 0, 0, width * 3, height * 3)
+            mainImage.setImageBitmap(newBitmap)
+            Toast.makeText(context, "${newBitmap.width} x ${newBitmap.height}", Toast.LENGTH_SHORT).show()
+        }
+        catch (e: OutOfMemoryError) {
+            Toast.makeText(context, "The image is too large", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     // CALL FILTERS FUNCTION
     fun filter(mainImage: ImageView, number : Int){
         var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap

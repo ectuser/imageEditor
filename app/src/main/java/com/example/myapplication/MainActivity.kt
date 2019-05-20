@@ -4,7 +4,6 @@ package com.example.myapplication
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -16,7 +15,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
-import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -58,8 +56,8 @@ class MainActivity : AppCompatActivity() {
 
         initialHeight = mainImage.layoutParams.height
 
-        // 100% scale by default
-        scaleSpinner.setSelection(2)
+        // 100% enlarge by default
+        enlargeSpinner.setSelection(2)
 
         // SHOW FILTERS BUTTONS
         filtersButton.setOnClickListener{ actionBut.filterClick(firstFilter, secondFilter, thirdFilter, cameraButton, imageButton, backButton, returnButton) }
@@ -69,7 +67,6 @@ class MainActivity : AppCompatActivity() {
         thirdFilter.setOnClickListener { edit.filter(mainImage, 3) }
 //        button3.setOnClickListener { edit.rotateImage(mainImage) }
         button3.setOnClickListener { edit.blur(mainImage) }
-
     }
 
     // SO NIGGAS THAT'S MY FUCKING CHECK FOR PERMISSIONS OK?
@@ -225,9 +222,18 @@ class MainActivity : AppCompatActivity() {
         MediaScannerConnection.scanFile(this, folderArray, fileArray, null)
     }
 
-    // JUST A WRAPPER FUNCTION FOR SCALING
-    fun getScale(@Suppress("UNUSED_PARAMETER") view: View) {
-        edit.scale(mainImage, scaleSpinner.selectedItem.toString(), initialHeight)
+    // JUST A WRAPPER FUNCTION FOR ENLARGING
+    fun doEnlarging(@Suppress("UNUSED_PARAMETER") view: View) {
+        edit.enlarge(mainImage, enlargeSpinner.selectedItem.toString(), initialHeight)
+    }
+
+    // JUST A WRAPPER FUNCTION FOR ENLARGING
+    fun doScaling(@Suppress("UNUSED_PARAMETER") view: View) {
+        when {
+            scaleSpinner.selectedItemPosition == 0 -> edit.scale05x(this, mainImage)
+            scaleSpinner.selectedItemPosition == 1 -> edit.scale2x(this, mainImage)
+            scaleSpinner.selectedItemPosition == 2 -> edit.scale3x(this, mainImage)
+        }
     }
 
     // DMITRY'S FUNCTION TO FUCK SOME BITCHES USING A*
