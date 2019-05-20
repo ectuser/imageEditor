@@ -9,7 +9,7 @@
         <item>Diagonal Distance</item>
         <item>Euclidean Distance</item>
     </string-array>
-    <string-array name="scales">
+    <string-array name="proportions">
         <item>50%</item>
         <item>75%</item>
         <item>100%</item>
@@ -22,12 +22,18 @@
         <item>750%</item>
         <item>1000%</item>
     </string-array>
+    <string-array name="scales">
+        <item>x0.5</item>
+        <item>x2</item>
+        <item>x3</item>
+    </string-array>
     <string name="movement_option1">Movement in 4 directions</string>
     <string name="movement_option2">Movement in 8 directions</string>
     <string name="movement_option3">Movement in 8 directions if a corner isn\'t blocked</string>
     <string name="run_string">Run</string>
     <string name="clear_path_string">Clear path</string>
     <string name="clear_grid_string">Clear grid</string>
+    <string name="enlarge_string">Enlarge</string>
     <string name="scale_string">Scale</string>
     <string name="save_string">Save</string>
     <string name="algorithms_string">Algorithms</string>
