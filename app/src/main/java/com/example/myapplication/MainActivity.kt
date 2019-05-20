@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity() {
             mainImage.setImageURI(image_uri)
         }
 
-        compressImage()
+            //compressImage()
 
 
         // SHOW BUTTON "FILTERS":

@@ -92,14 +92,18 @@ class InterpolationActivity : AppCompatActivity() {
 
             if (drawMode == 2) {
                 // Interpolation
+                val step = 0.01f
                 if (a[1] != null) {
                     for (i in 0 until numberOfPoints) {
                         var tmp = xCoordinates[i]
-                        while (tmp!! < xCoordinates[i + 1]!!) {
-                            canvas.drawPoint(tmp, a[i]!! + b[i]!! * (tmp - xCoordinates[i]!!) +
+                        while (tmp!! < xCoordinates[i + 1]!! - step) {
+                            canvas.drawLine(tmp, a[i]!! + b[i]!! * (tmp - xCoordinates[i]!!) +
                                     c[i]!! * (tmp - xCoordinates[i]!!).pow(2) +
-                                    d[i]!! * (tmp - xCoordinates[i]!!).pow(3), paint)
-                            tmp += 0.05f
+                                    d[i]!! * (tmp - xCoordinates[i]!!).pow(3),
+                                tmp + step, a[i]!! + b[i]!! * (tmp + step - xCoordinates[i]!!) +
+                                        c[i]!! * (tmp + step - xCoordinates[i]!!).pow(2) +
+                                        d[i]!! * (tmp + step - xCoordinates[i]!!).pow(3), paint)
+                            tmp += step
                         }
                     }
                 }
