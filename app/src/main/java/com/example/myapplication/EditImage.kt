@@ -9,7 +9,6 @@ import kotlin.math.roundToInt
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
-import kotlin.math.max
 
 
 class EditImage(BTMP: Bitmap) {
@@ -31,9 +30,65 @@ class EditImage(BTMP: Bitmap) {
         mainImage.layoutParams = params
     }
 
-    @SuppressLint("NewApi")
     fun scale05x(context: Context, mainImage: ImageView) {
-       // to_do
+        val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+        val height = oldBitmap.height
+        val width = oldBitmap.width
+        val oldBitmapPixelsArray = IntArray(width * height)
+        val newBitmap = Bitmap.createBitmap(width / 2, height / 2, Bitmap.Config.ARGB_8888)
+        val newBitmapPixelsArray = IntArray((width / 2) * (height / 2))
+        oldBitmap.getPixels(oldBitmapPixelsArray, 0, width, 0, 0, width, height)
+
+        if (width % 2 == 0) {
+            for (i in newBitmapPixelsArray.indices) {
+                var redSum = (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width] and 0x00ff0000 shr 16) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width + 1] and 0x00ff0000 shr 16) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width + width] and 0x00ff0000 shr 16) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width + width + 1] and 0x00ff0000 shr 16)
+                var greenSum = (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width] and 0x0000ff00 shr 8) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width + 1] and 0x0000ff00 shr 8) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width + width] and 0x0000ff00 shr 8) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width + width + 1] and 0x0000ff00 shr 8)
+                var blueSum = (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width] and 0x000000ff shr 0) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width + 1] and 0x000000ff shr 0) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width + width] and 0x000000ff shr 0) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * width + width + 1] and 0x000000ff shr 0)
+
+                redSum /= 4
+                greenSum /= 4
+                blueSum /= 4
+
+                newBitmapPixelsArray[i] = ((0xff000000) or (redSum.toLong() shl 16) or
+                        (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+            }
+        }
+        else {
+            for (i in newBitmapPixelsArray.indices) {
+                var redSum = (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1)] and 0x00ff0000 shr 16) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1) + 1] and 0x00ff0000 shr 16) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1) + (width + 1)] and 0x00ff0000 shr 16) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1) + (width + 1) + 1] and 0x00ff0000 shr 16)
+                var greenSum = (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1)] and 0x0000ff00 shr 8) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1) + 1] and 0x0000ff00 shr 8) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1) + (width + 1)] and 0x0000ff00 shr 8) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1) + (width + 1) + 1] and 0x0000ff00 shr 8)
+                var blueSum = (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1)] and 0x000000ff shr 0) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1) + 1] and 0x000000ff shr 0) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1) + (width + 1)] and 0x000000ff shr 0) +
+                        (oldBitmapPixelsArray[i * 2 + (i / (width / 2)) * (width + 1) + (width + 1) + 1] and 0x000000ff shr 0)
+
+                redSum /= 4
+                greenSum /= 4
+                blueSum /= 4
+
+                newBitmapPixelsArray[i] = ((0xff000000) or (redSum.toLong() shl 16) or
+                        (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+            }
+        }
+
+        newBitmap.setPixels(newBitmapPixelsArray, 0, width / 2, 0, 0, width / 2, height / 2)
+        mainImage.setImageBitmap(newBitmap)
+        Toast.makeText(context, "${newBitmap.width} x ${newBitmap.height}", Toast.LENGTH_SHORT).show()
     }
 
     fun scale2x(context: Context, mainImage: ImageView) {
