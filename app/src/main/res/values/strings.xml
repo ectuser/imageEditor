@@ -33,7 +33,6 @@
     <string name="run_string">Run</string>
     <string name="clear_path_string">Clear path</string>
     <string name="clear_grid_string">Clear grid</string>
-    <string name="enlarge_string">Enlarge</string>
     <string name="scale_string">Scale</string>
     <string name="save_string">Save</string>
     <string name="algorithms_string">Algorithms</string>
@@ -42,4 +41,5 @@
     <!--<string name="interpolation_string">Interpolation</string>-->
     <string name="chain_string">Chain</string>
     <string name="interpolation_string">interpolation</string>
+    <string name="zoom_string">Zoom</string>
 </resources>

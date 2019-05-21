@@ -6,16 +6,44 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import kotlin.math.roundToInt
-import android.view.MotionEvent
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 
 
-class EditImage {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class EditImage(BTMP: Bitmap) {
+    var BACK_BITMAP = BTMP
     fun returnImage(mainImage: ImageView, savedBitmap: Bitmap){
         mainImage.setImageBitmap(savedBitmap)
     }
     fun enlarge(mainImage: ImageView, selected: String, initialHeight: Int) {
+        val scaleCoefficient = selected.removeRange(selected.length - 1, selected.length).toDouble() / 100
+        val params = mainImage.layoutParams
+        params.height = (initialHeight * scaleCoefficient).roundToInt()
+        mainImage.layoutParams = params
+    }
+    fun returnBackBitmap(): Bitmap {
+        return BACK_BITMAP
+    }
+    fun scale(mainImage: ImageView, selected: String, initialHeight: Int) {
         val scaleCoefficient = selected.removeRange(selected.length - 1, selected.length).toDouble() / 100
         val params = mainImage.layoutParams
         params.height = (initialHeight * scaleCoefficient).roundToInt()
@@ -206,6 +234,7 @@ class EditImage {
     // CALL FILTERS FUNCTION
     fun filter(mainImage: ImageView, number : Int){
         var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+        BACK_BITMAP = oldBitmap
         val height = oldBitmap.height
         val width = oldBitmap.width
         var oldBittmapPixelsArray = IntArray(width * height)
@@ -264,45 +293,88 @@ class EditImage {
 
     // DAMN BLUR
     @SuppressLint("ClickableViewAccessibility")
-    fun blur(mainImage: ImageView){
-        mainImage.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        var x = event.x
-                        var y = event.y
-//                        textView.text = "$x | $y"
-                        var eps = 30F
+    fun blur(mainImage: ImageView, coordinates: TextView) {
+        mainImage.setOnTouchListener(View.OnTouchListener { _, event ->
+            var rawX = event.x
+            var rawY = event.y
 
-                        var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
-                        val height = oldBitmap.height
-                        val width = oldBitmap.width
-                        var oldBittmapPixelsArray = IntArray(width * height)
-                        var newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-                        var newBitmapPixelsArray = oldBittmapPixelsArray
-                        oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height)
-                        var count = 0
-                        val array = oldBittmapPixelsArray //массив - донор
-                        val matrix = Array(height) { IntArray(width) } //будущая матрица
-                        for (i in matrix.indices) {
-                            for (j in 0 until matrix[i].size) {
-                                matrix[i][j] = array[count++] //перенос элементов из донора в матрицу
-                            }
-                        }
-                        matrix
-//                        for (row in 0..height)
-//                            for (column in 0..width){
-//                                newBitmapPixelsArray[(row * width) + column] = matrix[row][column]
-//                            }
-//                        newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
-//                        mainImage.setImageBitmap(newBitmap)
-//                        oldBittmapPixelsArray[x.toInt() * y.toInt()] =
+            var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+            var height = oldBitmap.height
+            var width = oldBitmap.width
 
-                    }
+            val x = (rawX.toDouble() * (width.toDouble() / mainImage.width.toDouble())).toInt()
+            val y = (rawY.toDouble() * (height.toDouble() / mainImage.height.toDouble())).toInt()
+
+            coordinates.text = "$x | $y"
+            var oldBittmapPixelsArray = IntArray(width * height)
+            var newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            var newBitmapPixelsArray = oldBittmapPixelsArray
+            oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height)
+            var count = 0
+            val array = oldBittmapPixelsArray //массив - донор
+            val matrix = Array(height) { IntArray(width) } //будущая матрица
+            for (i in matrix.indices) {
+                for (j in 0 until matrix[i].size) {
+                    matrix[i][j] = array[count++] //перенос элементов из донора в матрицу
                 }
-
-                return v?.onTouchEvent(event) ?: true
             }
+            val ys: IntArray = intArrayOf(-1, -1, -1, 0, 0, 0, +1, +1, +1)
+            val xs: IntArray = intArrayOf(-1, 0, +1, -1, 0, +1, -1, 0, +1)
+            var redSum = 0
+            var greenSum = 0
+            var blueSum = 0
+            for (i in 0..8){
+                var red = 0
+                var green = 0
+                var blue = 0
+                red = try {
+                    (matrix[y + ys[i]][x + xs[i]] and 0x00ff0000 shr 16)
+                } catch (e: NumberFormatException){
+                    0
+                }
+                green = try {
+                    (matrix[y + ys[i]][x + xs[i]] and 0x0000ff00 shr 8)
+                } catch (e: NumberFormatException){
+                    0
+                }
+                blue = try {
+                    (matrix[y + ys[i]][x + xs[i]] and 0x000000ff shr 0)
+                } catch (e: NumberFormatException){
+                    0
+                }
+//                            var red = (matrix[y + ys[i]][x + xs[i]] and 0x00ff0000 shr 16)
+//                            var green = (matrix[y + ys[i]][x + xs[i]] and 0x0000ff00 shr 8)
+//                            var blue = (matrix[y + ys[i]][x + xs[i]] and 0x000000ff shr 0)
+                redSum += red
+                greenSum += green
+                blueSum += blue
+
+
+                redSum += 0
+                greenSum += 0
+                blueSum += 0
+
+            }
+            redSum /= 9
+            greenSum /= 9
+            blueSum /= 9
+            for (i in 0..8){
+                try {
+                    matrix[y + ys[i]][x + xs[i]] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                }
+                catch (e: NumberFormatException){
+                    coordinates.text = "error"
+                }
+            }
+            for (row in 0 until height){
+                for (column in 0 until width) {
+                    newBitmapPixelsArray[(row * width) + column] = matrix[row][column]
+                }
+            }
+            newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
+            mainImage.setImageBitmap(newBitmap)
+
+            return@OnTouchListener true
         })
     }
 }
