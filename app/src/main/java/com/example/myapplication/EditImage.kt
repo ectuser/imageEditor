@@ -7,26 +7,11 @@ import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import kotlin.math.roundToInt
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import kotlin.math.max
+import kotlin.math.min
 
 
 class EditImage(BTMP: Bitmap) {
@@ -376,5 +361,76 @@ class EditImage(BTMP: Bitmap) {
 
             return@OnTouchListener true
         })
+    }
+
+    fun unsharpMask(context: Context, mainImage: ImageView) {
+        val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+        val height = oldBitmap.height
+        val width = oldBitmap.width
+        val oldBitmapPixelsArray = IntArray(width * height)
+        val newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val newBitmapPixelsArray = IntArray(width * height)
+        oldBitmap.getPixels(oldBitmapPixelsArray, 0, width, 0, 0, width, height)
+
+        val ys: IntArray = intArrayOf(-width, 0, width)
+        val xs: IntArray = intArrayOf(-1, 0, +1)
+
+        for (i in oldBitmapPixelsArray.indices) {
+            var redSum = 0
+            var greenSum = 0
+            var blueSum = 0
+
+            for (j in 0 until 3) {
+                for (k in 0 until 3) {
+                    var red = 0
+                    var green = 0
+                    var blue = 0
+
+                    red = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                        oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x00ff0000 shr 16
+                    } else {
+                        0
+                    }
+                    green = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                        oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x0000ff00 shr 8
+                    } else {
+                        0
+                    }
+                    blue = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                        oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x000000ff shr 0
+                    } else {
+                        0
+                    }
+
+                    redSum += red
+                    greenSum += green
+                    blueSum += blue
+                }
+            }
+
+            redSum /= 9
+            greenSum /= 9
+            blueSum /= 9
+
+            newBitmapPixelsArray[i] = ((0xff000000) or (redSum.toLong() shl 16) or
+                    (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+
+            val redOld = oldBitmapPixelsArray[i] and 0x00ff0000 shr 16
+            val greenOld = oldBitmapPixelsArray[i] and 0x0000ff00 shr 8
+            val blueOld = oldBitmapPixelsArray[i] and 0x000000ff shr 0
+
+            val redNew = newBitmapPixelsArray[i] and 0x00ff0000 shr 16
+            val greenNew = newBitmapPixelsArray[i] and 0x0000ff00 shr 8
+            val blueNew = newBitmapPixelsArray[i] and 0x000000ff shr 0
+
+            newBitmapPixelsArray[i] = ((0xff000000) or (
+                    (min(redOld.toLong() + (max(redOld.toLong() - redNew.toLong(), 0)), 255)) shl 16) or
+                    (min(greenOld.toLong() + (max(greenOld.toLong() - greenNew.toLong(), 0)), 255) shl 8) or
+                    (min(blueOld.toLong() + (max(blueOld.toLong() - blueNew.toLong(), 0)), 255) shl 0)).toInt()
+        }
+
+        newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
+        mainImage.setImageBitmap(newBitmap)
+        Toast.makeText(context, "Applied", Toast.LENGTH_SHORT).show()
     }
 }

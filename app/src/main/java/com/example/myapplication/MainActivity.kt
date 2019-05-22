@@ -69,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         thirdFilter.setOnClickListener { edit.filter(mainImage, 3) }
 //        button3.setOnClickListener { edit.rotateImage(mainImage) }
         button3.setOnClickListener { edit.blur(mainImage, coordinates) }
+        unsharpMaskButton.setOnClickListener { edit.unsharpMask(this, mainImage) }
         returnButton.setOnClickListener { edit.returnImage(mainImage, RETURN_BITMAP) }
         backButton.setOnClickListener {
             BACK_BITMAP = edit.returnBackBitmap()
