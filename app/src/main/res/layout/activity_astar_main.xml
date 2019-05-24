@@ -74,6 +74,7 @@
             android:text="@string/create_grid_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/black_button"
             android:id="@+id/createGridButton"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
