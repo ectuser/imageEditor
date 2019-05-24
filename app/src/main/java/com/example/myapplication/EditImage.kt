@@ -9,24 +9,7 @@ import kotlin.math.roundToInt
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import kotlin.math.sqrt
 
 
 class EditImage(BTMP: Bitmap) {
@@ -295,21 +278,22 @@ class EditImage(BTMP: Bitmap) {
     @SuppressLint("ClickableViewAccessibility")
     fun blur(mainImage: ImageView, coordinates: TextView) {
         mainImage.setOnTouchListener(View.OnTouchListener { _, event ->
+            // click coordinates
             var rawX = event.x
             var rawY = event.y
 
             var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
             var height = oldBitmap.height
             var width = oldBitmap.width
-
+            // get bitmap coordinates
             val x = (rawX.toDouble() * (width.toDouble() / mainImage.width.toDouble())).toInt()
             val y = (rawY.toDouble() * (height.toDouble() / mainImage.height.toDouble())).toInt()
 
-            coordinates.text = "$x | $y"
-            var oldBittmapPixelsArray = IntArray(width * height)
-            var newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            var newBitmapPixelsArray = oldBittmapPixelsArray
-            oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height)
+//            coordinates.text = "$x | $y"
+            var oldBittmapPixelsArray = IntArray(width * height) // empty pixels array
+            var newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888) // new bitmap
+            var newBitmapPixelsArray = oldBittmapPixelsArray // the same for new bitmap
+            oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height) // filling pixels
             var count = 0
             val array = oldBittmapPixelsArray //массив - донор
             val matrix = Array(height) { IntArray(width) } //будущая матрица
@@ -318,57 +302,41 @@ class EditImage(BTMP: Bitmap) {
                     matrix[i][j] = array[count++] //перенос элементов из донора в матрицу
                 }
             }
-            val ys: IntArray = intArrayOf(-1, -1, -1, 0, 0, 0, +1, +1, +1)
-            val xs: IntArray = intArrayOf(-1, 0, +1, -1, 0, +1, -1, 0, +1)
             var redSum = 0
             var greenSum = 0
             var blueSum = 0
-            for (i in 0..8){
-                var red = 0
-                var green = 0
-                var blue = 0
-                red = try {
-                    (matrix[y + ys[i]][x + xs[i]] and 0x00ff0000 shr 16)
-                } catch (e: NumberFormatException){
-                    0
-                }
-                green = try {
-                    (matrix[y + ys[i]][x + xs[i]] and 0x0000ff00 shr 8)
-                } catch (e: NumberFormatException){
-                    0
-                }
-                blue = try {
-                    (matrix[y + ys[i]][x + xs[i]] and 0x000000ff shr 0)
-                } catch (e: NumberFormatException){
-                    0
-                }
-//                            var red = (matrix[y + ys[i]][x + xs[i]] and 0x00ff0000 shr 16)
-//                            var green = (matrix[y + ys[i]][x + xs[i]] and 0x0000ff00 shr 8)
-//                            var blue = (matrix[y + ys[i]][x + xs[i]] and 0x000000ff shr 0)
-                redSum += red
-                greenSum += green
-                blueSum += blue
 
+            var eps = ((sqrt(width.toDouble() * height.toDouble())) / (100)).toInt() // ЭТО ОКРЕСТНОСТЬ БЛЮРА (тип радиус), КОРОЧЕ НАДО ПРИДУМАТЬ, как ее менять в зависимости от разрешения
 
-                redSum += 0
-                greenSum += 0
-                blueSum += 0
-
-            }
-            redSum /= 9
-            greenSum /= 9
-            blueSum /= 9
-            for (i in 0..8){
-                try {
-                    matrix[y + ys[i]][x + xs[i]] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
-                }
-                catch (e: NumberFormatException){
-                    coordinates.text = "error"
+            for (i in y - eps..y + eps){
+                for (j in x - eps..x + eps){
+                    if (i in 0..(height - 1) && j >= 0 && j < width){
+                        var red = 0
+                        var green = 0
+                        var blue = 0
+                        red = matrix[i][j] and 0x00ff0000 shr 16
+                        green = matrix[i][j] and 0x0000ff00 shr 8
+                        blue = matrix[i][j] and 0x000000ff shr 0
+                        redSum += red
+                        greenSum += green
+                        blueSum += blue
+                    }
                 }
             }
+            redSum /= ((1 + 2 * eps) * (1 + 2 * eps))
+            greenSum /= ((1 + 2 * eps) * (1 + 2 * eps))
+            blueSum /= ((1 + 2 * eps) * (1 + 2 * eps))
+            for (i in y - eps..y + eps){
+                for (j in x - eps..x + eps){
+                    if (i in 0..(height - 1) && j >= 0 && j < width){
+                        matrix[i][j] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                    }
+                }
+            }
+
             for (row in 0 until height){
                 for (column in 0 until width) {
-                    newBitmapPixelsArray[(row * width) + column] = matrix[row][column]
+                    newBitmapPixelsArray[(row * width) + column] = matrix[row][column] // from matrix to new empty pixels array
                 }
             }
             newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
