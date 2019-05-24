@@ -67,7 +67,18 @@ class MainActivity : AppCompatActivity() {
         firstFilter.setOnClickListener { edit.filter(mainImage, 1) }
         secondFilter.setOnClickListener { edit.filter(mainImage, 2) }
         thirdFilter.setOnClickListener { edit.filter(mainImage, 3) }
-        blurButton.setOnClickListener { edit.blur(mainImage) }
+        var counter = 0
+        blurButton.setOnClickListener {
+            if (counter % 2 == 0) {
+                Toast.makeText(this, "Blur activated", Toast.LENGTH_SHORT).show()
+                edit.blur(mainImage)
+            }
+            else {
+                Toast.makeText(this, "Blur disabled", Toast.LENGTH_SHORT).show()
+                mainImage.setOnTouchListener(null)
+            }
+            counter++
+        }
         unsharpMaskButton.setOnClickListener { edit.unsharpMask(this, mainImage) }
         returnButton.setOnClickListener { edit.returnImage(mainImage, RETURN_BITMAP) }
         backButton.setOnClickListener {
