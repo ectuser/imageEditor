@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
             BACK_BITMAP = edit.returnBackBitmap()
             edit.returnImage(mainImage, BACK_BITMAP)
         }
+        rotateButton.setOnClickListener { edit.rotateImage(mainImage) }
     }
 
     // SO NIGGAS THAT'S MY FUCKING CHECK FOR PERMISSIONS OK?
