@@ -12,6 +12,7 @@ import android.view.View
 <<<<<<< HEAD
 <<<<<<< HEAD
 import android.widget.Toast
+<<<<<<< HEAD
 =======
 import android.widget.TextView
 import android.R.attr.x
@@ -53,6 +54,11 @@ import kotlin.math.max
 import kotlin.math.min
 >>>>>>> 21bdac1 (Rls 8: unsharp masking)
 
+=======
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
+>>>>>>> 30d2864 (Commit for merge)
 
 class EditImage(BTMP: Bitmap) {
     private var backBitmap = BTMP
@@ -303,6 +309,7 @@ class EditImage(BTMP: Bitmap) {
 
     // Fucking rotation doesn't work
     fun rotateImage(mainImage: ImageView){
+<<<<<<< HEAD
         val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap // создаем битмап из imageview
         var height = oldBitmap.height // высота картинки и битмапа
         var width = oldBitmap.width // ширина
@@ -310,10 +317,22 @@ class EditImage(BTMP: Bitmap) {
         val newBitmap = Bitmap.createBitmap(height, width, Bitmap.Config.ARGB_8888)  // ноздаем новый битмап (пока пустой, но шириной и высотой такой же, как и прошлый)
         oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height) // заполняем старый массив пикселей пикселями из старого битмапа
 // а тут мы первращаем массив пикселей в матрицу пикселей
+=======
+        var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap // создаем битмап из imageview
+        val height = oldBitmap.height // высота картинки и битмапа
+        val width = oldBitmap.width // ширина
+        var oldBittmapPixelsArray = IntArray(width * height) // массив его пикселей (пока просто массив, не двумерный, и пока он пустой, то есть ничего не содержит, т.е. пока это просто массив длиной width * height)
+        var newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)  // ноздаем новый битмап (пока пустой, но шириной и высотой такой же, как и прошлый)
+        var newBitmapPixelsArray = oldBittmapPixelsArray // создаем массив пикселей нового битмапа
+        oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height) // заполняем старый массив пикселей пикселями из старого битмапа
+// а тут мы первращаем массив пикселей в матрицу пикселей
+        val array = oldBittmapPixelsArray // массив-донор - массив пикселей старого битмапа
+>>>>>>> 30d2864 (Commit for merge)
         val matrix = Array(height) { IntArray(width) } //будущая матрица
         var count = 0
         for (i in matrix.indices) {
             for (j in 0 until matrix[i].size) {
+<<<<<<< HEAD
                 matrix[i][j] = oldBittmapPixelsArray[count++] //перенос элементов из донора в матрицу
             }
         }
@@ -336,12 +355,46 @@ class EditImage(BTMP: Bitmap) {
         }
         newBitmap.setPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height) // здесь вылет
         mainImage.setImageBitmap(newBitmap)
+=======
+                matrix[i][j] = array[count++] //перенос элементов из донора в матрицу
+            }
+        }
+        val newMatrix = Array(width) { IntArray(height) }
+
+        // ALGORITHM BEGIN
+        var x0 : Int = (width / 2)
+        var y0 : Int = (height / 2)
+        var rotationDeg = 90.0
+        var rotationRad = Math.toRadians(rotationDeg)
+
+        for (y1 in matrix.indices) {
+            for (x1 in 0 until matrix[y1].size) {
+                var el = matrix[y1][x1]
+                var x2 = cos(rotationRad) * (x1 - x0) - sin(rotationRad) * (y1 - y0) + x0
+                var y2 = sin(rotationRad) * (x1 - x0) + cos(rotationRad) * (y1 - y0) + y0
+                newMatrix[y2.toInt()][x2.toInt()] = el
+            }
+        }
+
+
+
+        // ALGORITHM END
+
+//        for (row in 0 until height){
+//            for (column in 0 until width) {
+//                newBitmapPixelsArray[(row * width) + column] = matrix[row][column] // забиваем новый массив пикселей по формуле соответствующими значениями из матрицы
+//            }
+//        }
+//        newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height) // добавляем полученные пиксели в новый битмап
+//        mainImage.setImageBitmap(newBitmap) // ставим новый битмап в imageview
+>>>>>>> 30d2864 (Commit for merge)
     }
 
     // DAMN BLUR
     @SuppressLint("ClickableViewAccessibility")
     fun blur(mainImage: ImageView, coordinates: TextView) {
         mainImage.setOnTouchListener(View.OnTouchListener { _, event ->
+<<<<<<< HEAD
             val rawX = event.x
             val rawY = event.y
 
@@ -356,6 +409,24 @@ class EditImage(BTMP: Bitmap) {
             val oldBittmapPixelsArray = IntArray(width * height)
             val newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height)
+=======
+            // click coordinates
+            var rawX = event.x
+            var rawY = event.y
+
+            var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+            var height = oldBitmap.height
+            var width = oldBitmap.width
+            // get bitmap coordinates
+            val x = (rawX.toDouble() * (width.toDouble() / mainImage.width.toDouble())).toInt()
+            val y = (rawY.toDouble() * (height.toDouble() / mainImage.height.toDouble())).toInt()
+
+//            coordinates.text = "$x | $y"
+            var oldBittmapPixelsArray = IntArray(width * height) // empty pixels array
+            var newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888) // new bitmap
+            var newBitmapPixelsArray = oldBittmapPixelsArray // the same for new bitmap
+            oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height) // filling pixels
+>>>>>>> 30d2864 (Commit for merge)
             var count = 0
             val matrix = Array(height) { IntArray(width) } //будущая матрица
             for (i in matrix.indices) {
@@ -363,11 +434,10 @@ class EditImage(BTMP: Bitmap) {
                     matrix[i][j] = oldBittmapPixelsArray[count++] //перенос элементов из донора в матрицу
                 }
             }
-            val ys: IntArray = intArrayOf(-1, -1, -1, 0, 0, 0, +1, +1, +1)
-            val xs: IntArray = intArrayOf(-1, 0, +1, -1, 0, +1, -1, 0, +1)
             var redSum = 0
             var greenSum = 0
             var blueSum = 0
+<<<<<<< HEAD
             for (i in 0..8){
                 val red: Int = try {
                     (matrix[y + ys[i]][x + xs[i]] and 0x00ff0000 shr 16)
@@ -391,23 +461,42 @@ class EditImage(BTMP: Bitmap) {
                 greenSum += green
                 blueSum += blue
 
+=======
+>>>>>>> 30d2864 (Commit for merge)
 
-                redSum += 0
-                greenSum += 0
-                blueSum += 0
+            var eps = ((sqrt(height.toDouble() * width.toDouble())) / (100)).toInt() // ЭТО ОКРЕСТНОСТЬ БЛЮРА (тип радиус), КОРОЧЕ НАДО ПРИДУМАТЬ, как ее менять в зависимости от разрешения
 
-            }
-            redSum /= 9
-            greenSum /= 9
-            blueSum /= 9
-            for (i in 0..8){
-                try {
-                    matrix[y + ys[i]][x + xs[i]] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+            for (i in y - eps..y + eps){
+                for (j in x - eps..x + eps){
+                    if (i in 0..(height - 1) && j >= 0 && j < width){
+                        var red = 0
+                        var green = 0
+                        var blue = 0
+                        red = matrix[i][j] and 0x00ff0000 shr 16
+                        green = matrix[i][j] and 0x0000ff00 shr 8
+                        blue = matrix[i][j] and 0x000000ff shr 0
+                        redSum += red
+                        greenSum += green
+                        blueSum += blue
+                    }
                 }
+<<<<<<< HEAD
                 catch (e: NumberFormatException){
                     coordinates.text = R.string.error_string.toString()
+=======
+            }
+            redSum /= ((1 + 2 * eps) * (1 + 2 * eps))
+            greenSum /= ((1 + 2 * eps) * (1 + 2 * eps))
+            blueSum /= ((1 + 2 * eps) * (1 + 2 * eps))
+            for (i in y - eps..y + eps){
+                for (j in x - eps..x + eps){
+                    if (i in 0..(height - 1) && j >= 0 && j < width){
+                        matrix[i][j] = ((0xff000000) or (redSum.toLong() shl 16) or (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+                    }
+>>>>>>> 30d2864 (Commit for merge)
                 }
             }
+
             for (row in 0 until height){
                 for (column in 0 until width) {
                     oldBittmapPixelsArray[(row * width) + column] = matrix[row][column]

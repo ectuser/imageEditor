@@ -80,6 +80,7 @@ class MainActivity : AppCompatActivity() {
             edit.returnImage(mainImage, backBitmap)
         }
         rotateButton.setOnClickListener { edit.rotateImage(mainImage) }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -89,6 +90,8 @@ class MainActivity : AppCompatActivity() {
         zoomSpinner.visibility = View.INVISIBLE
         scaleSpinner.visibility = View.INVISIBLE
 >>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
+=======
+>>>>>>> 30d2864 (Commit for merge)
     }
 
     // SO NIGGAS THAT'S MY FUCKING CHECK FOR PERMISSIONS OK?
