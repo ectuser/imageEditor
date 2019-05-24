@@ -7,10 +7,10 @@ import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import kotlin.math.roundToInt
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import kotlin.math.sqrt
-
+import kotlin.math.max
+import kotlin.math.min
 
 class EditImage(BTMP: Bitmap) {
     var BACK_BITMAP = BTMP
@@ -262,21 +262,37 @@ class EditImage(BTMP: Bitmap) {
 
     // Fucking rotation doesn't work
     fun rotateImage(mainImage: ImageView){
-        val matrix = Matrix()
+        var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap // создаем битмап из imageview
+        val height = oldBitmap.height // высота картинки и битмапа
+        val width = oldBitmap.width // ширина
+        var oldBittmapPixelsArray = IntArray(width * height) // массив его пикселей (пока просто массив, не двумерный, и пока он пустой, то есть ничего не содержит, т.е. пока это просто массив длиной width * height)
+        var newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)  // ноздаем новый битмап (пока пустой, но шириной и высотой такой же, как и прошлый)
+        var newBitmapPixelsArray = oldBittmapPixelsArray // создаем массив пикселей нового битмапа
+        oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height) // заполняем старый массив пикселей пикселями из старого битмапа
+// а тут мы первращаем массив пикселей в матрицу пикселей
+        val array = oldBittmapPixelsArray // массив-донор - массив пикселей старого битмапа
+        val matrix = Array(height) { IntArray(width) } //будущая матрица
+        var count = 0
+        for (i in matrix.indices) {
+            for (j in 0 until matrix[i].size) {
+                matrix[i][j] = array[count++] //перенос элементов из донора в матрицу
+            }
+        }
+        val newMatrix = Array(width) { IntArray(height) }
 
-        matrix.postRotate(90F)
 
-        val bitmapOrg = (mainImage.drawable as BitmapDrawable).bitmap
-        val scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, bitmapOrg.width, bitmapOrg.height, true)
-
-        val rotatedBitmap =
-            Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width, scaledBitmap.height, matrix, true)
-        mainImage.setImageBitmap(rotatedBitmap)
+//        for (row in 0 until height){
+//            for (column in 0 until width) {
+//                newBitmapPixelsArray[(row * width) + column] = matrix[row][column] // забиваем новый массив пикселей по формуле соответствующими значениями из матрицы
+//            }
+//        }
+//        newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height) // добавляем полученные пиксели в новый битмап
+//        mainImage.setImageBitmap(newBitmap) // ставим новый битмап в imageview
     }
 
     // DAMN BLUR
     @SuppressLint("ClickableViewAccessibility")
-    fun blur(mainImage: ImageView, coordinates: TextView) {
+    fun blur(mainImage: ImageView) {
         mainImage.setOnTouchListener(View.OnTouchListener { _, event ->
             // click coordinates
             var rawX = event.x
@@ -344,5 +360,72 @@ class EditImage(BTMP: Bitmap) {
 
             return@OnTouchListener true
         })
+    }
+
+    fun unsharpMask(context: Context, mainImage: ImageView) {
+        val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+        val height = oldBitmap.height
+        val width = oldBitmap.width
+        val oldBitmapPixelsArray = IntArray(width * height)
+        val newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val newBitmapPixelsArray = IntArray(width * height)
+        oldBitmap.getPixels(oldBitmapPixelsArray, 0, width, 0, 0, width, height)
+
+        val ys: IntArray = intArrayOf(-width, 0, width)
+        val xs: IntArray = intArrayOf(-1, 0, +1)
+
+        for (i in oldBitmapPixelsArray.indices) {
+            var redSum = 0
+            var greenSum = 0
+            var blueSum = 0
+
+            for (j in 0 until 3) {
+                for (k in 0 until 3) {
+                    var red = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                        oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x00ff0000 shr 16
+                    } else {
+                        0
+                    }
+                    var green = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                        oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x0000ff00 shr 8
+                    } else {
+                        0
+                    }
+                    var blue = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                        oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x000000ff shr 0
+                    } else {
+                        0
+                    }
+
+                    redSum += red
+                    greenSum += green
+                    blueSum += blue
+                }
+            }
+
+            redSum /= 9
+            greenSum /= 9
+            blueSum /= 9
+
+            newBitmapPixelsArray[i] = ((0xff000000) or (redSum.toLong() shl 16) or
+                    (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+
+            val redOld = oldBitmapPixelsArray[i] and 0x00ff0000 shr 16
+            val greenOld = oldBitmapPixelsArray[i] and 0x0000ff00 shr 8
+            val blueOld = oldBitmapPixelsArray[i] and 0x000000ff shr 0
+
+            val redNew = newBitmapPixelsArray[i] and 0x00ff0000 shr 16
+            val greenNew = newBitmapPixelsArray[i] and 0x0000ff00 shr 8
+            val blueNew = newBitmapPixelsArray[i] and 0x000000ff shr 0
+
+            newBitmapPixelsArray[i] = ((0xff000000) or (
+                    (min(redOld.toLong() + (max(redOld.toLong() - redNew.toLong(), 0)), 255)) shl 16) or
+                    (min(greenOld.toLong() + (max(greenOld.toLong() - greenNew.toLong(), 0)), 255) shl 8) or
+                    (min(blueOld.toLong() + (max(blueOld.toLong() - blueNew.toLong(), 0)), 255) shl 0)).toInt()
+        }
+
+        newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
+        mainImage.setImageBitmap(newBitmap)
+        Toast.makeText(context, "Applied", Toast.LENGTH_SHORT).show()
     }
 }
