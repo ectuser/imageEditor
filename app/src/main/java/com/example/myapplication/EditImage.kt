@@ -7,10 +7,11 @@ import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import kotlin.math.roundToInt
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 class EditImage(BTMP: Bitmap) {
@@ -281,24 +282,6 @@ class EditImage(BTMP: Bitmap) {
         }
         val newMatrix = Array(width) { IntArray(height) }
 
-        // ALGORITHM BEGIN
-        var x0 : Int = (width / 2)
-        var y0 : Int = (height / 2)
-        var rotationDeg = 90.0
-        var rotationRad = Math.toRadians(rotationDeg)
-
-        for (y1 in matrix.indices) {
-            for (x1 in 0 until matrix[y1].size) {
-                var el = matrix[y1][x1]
-                var x2 = cos(rotationRad) * (x1 - x0) - sin(rotationRad) * (y1 - y0) + x0
-                var y2 = sin(rotationRad) * (x1 - x0) + cos(rotationRad) * (y1 - y0) + y0
-                newMatrix[y2.toInt()][x2.toInt()] = el
-            }
-        }
-
-
-
-        // ALGORITHM END
 
 //        for (row in 0 until height){
 //            for (column in 0 until width) {
@@ -311,7 +294,7 @@ class EditImage(BTMP: Bitmap) {
 
     // DAMN BLUR
     @SuppressLint("ClickableViewAccessibility")
-    fun blur(mainImage: ImageView, coordinates: TextView) {
+    fun blur(mainImage: ImageView) {
         mainImage.setOnTouchListener(View.OnTouchListener { _, event ->
             // click coordinates
             var rawX = event.x
@@ -379,5 +362,72 @@ class EditImage(BTMP: Bitmap) {
 
             return@OnTouchListener true
         })
+    }
+
+    fun unsharpMask(context: Context, mainImage: ImageView) {
+        val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+        val height = oldBitmap.height
+        val width = oldBitmap.width
+        val oldBitmapPixelsArray = IntArray(width * height)
+        val newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val newBitmapPixelsArray = IntArray(width * height)
+        oldBitmap.getPixels(oldBitmapPixelsArray, 0, width, 0, 0, width, height)
+
+        val ys: IntArray = intArrayOf(-width, 0, width)
+        val xs: IntArray = intArrayOf(-1, 0, +1)
+
+        for (i in oldBitmapPixelsArray.indices) {
+            var redSum = 0
+            var greenSum = 0
+            var blueSum = 0
+
+            for (j in 0 until 3) {
+                for (k in 0 until 3) {
+                    var red = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                        oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x00ff0000 shr 16
+                    } else {
+                        0
+                    }
+                    var green = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                        oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x0000ff00 shr 8
+                    } else {
+                        0
+                    }
+                    var blue = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                        oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x000000ff shr 0
+                    } else {
+                        0
+                    }
+
+                    redSum += red
+                    greenSum += green
+                    blueSum += blue
+                }
+            }
+
+            redSum /= 9
+            greenSum /= 9
+            blueSum /= 9
+
+            newBitmapPixelsArray[i] = ((0xff000000) or (redSum.toLong() shl 16) or
+                    (greenSum.toLong() shl 8) or (blueSum.toLong() shl 0)).toInt()
+
+            val redOld = oldBitmapPixelsArray[i] and 0x00ff0000 shr 16
+            val greenOld = oldBitmapPixelsArray[i] and 0x0000ff00 shr 8
+            val blueOld = oldBitmapPixelsArray[i] and 0x000000ff shr 0
+
+            val redNew = newBitmapPixelsArray[i] and 0x00ff0000 shr 16
+            val greenNew = newBitmapPixelsArray[i] and 0x0000ff00 shr 8
+            val blueNew = newBitmapPixelsArray[i] and 0x000000ff shr 0
+
+            newBitmapPixelsArray[i] = ((0xff000000) or (
+                    (min(redOld.toLong() + (max(redOld.toLong() - redNew.toLong(), 0)), 255)) shl 16) or
+                    (min(greenOld.toLong() + (max(greenOld.toLong() - greenNew.toLong(), 0)), 255) shl 8) or
+                    (min(blueOld.toLong() + (max(blueOld.toLong() - blueNew.toLong(), 0)), 255) shl 0)).toInt()
+        }
+
+        newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
+        mainImage.setImageBitmap(newBitmap)
+        Toast.makeText(context, "Applied", Toast.LENGTH_SHORT).show()
     }
 }
