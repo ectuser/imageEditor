@@ -33,13 +33,28 @@
     <string name="run_string">Run</string>
     <string name="clear_path_string">Clear path</string>
     <string name="clear_grid_string">Clear grid</string>
+<<<<<<< HEAD
     <string name="enlarge_string">Enlarge</string>
+=======
+    <string name="rotate_string">Rotate</string>
+>>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
     <string name="scale_string">Scale</string>
     <string name="save_string">Save</string>
     <string name="algorithms_string">Algorithms</string>
+    <string name="blur_string">Blur</string>
     <string name="unsharp_mask_string">Unsharp Mask</string>
     <string name="clear_string">Clear</string>
-    <!--<string name="interpolation_string">Interpolation</string>-->
     <string name="chain_string">Chain</string>
+    <string name="a_star_string">A*</string>
     <string name="interpolation_string">interpolation</string>
+<<<<<<< HEAD
+=======
+    <string name="zoom_string">Zoom</string>
+    <string name="tools_string">Tools</string>
+    <string name="negative_string">Negative</string>
+    <string name="monochrome_string">Monochrome</string>
+    <string name="red_string">Red</string>
+    <string name="back_string">Back</string>
+    <string name="return_string">Return</string>
+>>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
 </resources>

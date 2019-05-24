@@ -34,13 +34,11 @@ class MainActivity : AppCompatActivity() {
     private var image_uri: Uri? = null
     private var REQ_CODE_FOR_ACTION: Int = 0
     private var initialHeight = 0
-    var RETURN_BITMAP = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-    var BACK_BITMAP = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+    private var RETURN_BITMAP = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+    private var BACK_BITMAP = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
     private val edit = EditImage(BACK_BITMAP)
     private val actionBut = ActionsWithButtons()
     private var MAIN_COUNTER = 0
-
-//    private val image = OpenImage()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,17 +57,23 @@ class MainActivity : AppCompatActivity() {
         initialHeight = mainImage.layoutParams.height
 
         // 100% enlarge by default
-        enlargeSpinner.setSelection(2)
+        zoomSpinner.setSelection(2)
 
         // SHOW FILTERS BUTTONS
-        filtersButton.setOnClickListener{ actionBut.filterClick(firstFilter, secondFilter, thirdFilter, cameraButton, imageButton, backButton, returnButton) }
+        toolsButton.setOnClickListener{ actionBut.filterClick(firstFilter, secondFilter, thirdFilter,
+            cameraButton, imageButton, backButton, returnButton, rotateButton, saveButton, zoomButton,
+            unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner) }
         // NEGATIVE FILTER
         firstFilter.setOnClickListener { edit.filter(mainImage, 1) }
         secondFilter.setOnClickListener { edit.filter(mainImage, 2) }
         thirdFilter.setOnClickListener { edit.filter(mainImage, 3) }
+<<<<<<< HEAD
 //        button3.setOnClickListener { edit.rotateImage(mainImage) }
 <<<<<<< HEAD
         button3.setOnClickListener { edit.blur(mainImage, coordinates) }
+=======
+        blurButton.setOnClickListener { edit.blur(mainImage, coordinates) }
+>>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
         unsharpMaskButton.setOnClickListener { edit.unsharpMask(this, mainImage) }
         returnButton.setOnClickListener { edit.returnImage(mainImage, RETURN_BITMAP) }
         backButton.setOnClickListener {
@@ -77,9 +81,14 @@ class MainActivity : AppCompatActivity() {
             edit.returnImage(mainImage, BACK_BITMAP)
         }
 
+<<<<<<< HEAD
 =======
         button3.setOnClickListener { edit.blur(mainImage) }
 >>>>>>> a017cd3 (Nrls 2: x2, x3)
+=======
+        zoomSpinner.visibility = View.INVISIBLE
+        scaleSpinner.visibility = View.INVISIBLE
+>>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
     }
 
     // SO NIGGAS THAT'S MY FUCKING CHECK FOR PERMISSIONS OK?
@@ -187,14 +196,17 @@ class MainActivity : AppCompatActivity() {
 <<<<<<< HEAD
         RETURN_BITMAP = (mainImage.drawable as BitmapDrawable).bitmap
 
+<<<<<<< HEAD
 //        compressImage()
 =======
             //compressImage()
 >>>>>>> 7d72210 (Fix 6: splines without gaps (better interpolation))
 
 
+=======
+>>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
         // SHOW BUTTON "FILTERS":
-        filtersButton.visibility = View.VISIBLE
+        toolsButton.visibility = View.VISIBLE
     }
 
 
@@ -242,8 +254,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     // JUST A WRAPPER FUNCTION FOR ENLARGING
-    fun doEnlarging(@Suppress("UNUSED_PARAMETER") view: View) {
-        edit.enlarge(mainImage, enlargeSpinner.selectedItem.toString(), initialHeight)
+    fun doZooming(@Suppress("UNUSED_PARAMETER") view: View) {
+        edit.enlarge(mainImage, zoomSpinner.selectedItem.toString(), initialHeight)
     }
 
     // JUST A WRAPPER FUNCTION FOR ENLARGING
@@ -255,14 +267,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // DMITRY'S FUNCTION TO FUCK SOME BITCHES USING A*
-    fun transitToAStar(@Suppress("UNUSED_PARAMETER") view: View) {
-        val intent = Intent(this, AStarMainActivity::class.java)
-        startActivity(intent)
-    }
-
-    fun transitToInterpolation(@Suppress("UNUSED_PARAMETER") view: View) {
-        val intent = Intent(this, InterpolationActivity::class.java)
+    // TRANSITION TO THE ACTIVITY WHERE YOU CAN CHOOSE ONE OF 2 ALGORITHMS
+    fun transitToAlgorithms(@Suppress("UNUSED_PARAMETER") view: View) {
+        val intent = Intent(this, AlgorithmChoiceActivity::class.java)
         startActivity(intent)
     }
 }

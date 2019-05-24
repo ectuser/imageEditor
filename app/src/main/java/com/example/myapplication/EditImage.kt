@@ -417,21 +417,17 @@ class EditImage(BTMP: Bitmap) {
 
             for (j in 0 until 3) {
                 for (k in 0 until 3) {
-                    var red = 0
-                    var green = 0
-                    var blue = 0
-
-                    red = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                    var red = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
                         oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x00ff0000 shr 16
                     } else {
                         0
                     }
-                    green = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                    var green = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
                         oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x0000ff00 shr 8
                     } else {
                         0
                     }
-                    blue = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
+                    var blue = if (i + ys[j] + xs[k] >= 0 && i + ys[j] + xs[k] < width * height) {
                         oldBitmapPixelsArray[i + ys[j] + xs[k]] and 0x000000ff shr 0
                     } else {
                         0

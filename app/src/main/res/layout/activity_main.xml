@@ -32,12 +32,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/algorithmsButtom" android:text="@string/algorithms_string"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="8dp" android:layout_marginStart="8dp"
-            android:onClick="transitToAStar" app:layout_constraintBottom_toTopOf="@+id/imgScroll"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2" android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"/>
+            android:onClick="transitToAlgorithms"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2" android:layout_marginRight="8dp"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"/>
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="350dp"
@@ -73,10 +73,19 @@
             android:id="@+id/enlargeButton" app:layout_constraintStart_toStartOf="@+id/guideline12"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:onClick="doEnlarging" app:layout_constraintTop_toTopOf="parent"
+            android:onClick="doZooming" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/imgScroll"
-            app:layout_constraintHorizontal_bias="0.524" app:layout_constraintVertical_bias="0.529"/>
+            app:layout_constraintHorizontal_bias="0.524" app:layout_constraintVertical_bias="0.529"
+            android:visibility="invisible"/>
+    <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/zoomSpinner" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" app:layout_constraintStart_toStartOf="@+id/guideline12"
+            app:layout_constraintTop_toBottomOf="@+id/zoomButton"
+            android:entries="@array/proportions" android:layout_marginLeft="8dp" android:layout_marginStart="8dp"
+            tools:visibility="invisible"/>
     <android.support.constraint.Guideline
             android:orientation="horizontal"
             android:layout_width="wrap_content"
@@ -92,6 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/guideline2" app:layout_constraintGuide_percent="0.32"/>
+<<<<<<< HEAD
     <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,6 +109,8 @@
             android:layout_marginRight="8dp" app:layout_constraintStart_toStartOf="@+id/guideline12"
             app:layout_constraintTop_toBottomOf="@+id/enlargeButton"
             android:entries="@array/proportions" android:layout_marginLeft="8dp" android:layout_marginStart="8dp"/>
+=======
+>>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
     <Button
             android:text="@string/save_string"
             android:layout_width="wrap_content"
@@ -108,12 +120,12 @@
             android:layout_marginTop="8dp" android:onClick="saveImage" android:layout_marginStart="8dp"
             app:layout_constraintStart_toStartOf="@+id/guideline2" android:layout_marginLeft="8dp"
             android:layout_marginEnd="8dp" app:layout_constraintEnd_toStartOf="@+id/guideline12"
-            android:layout_marginRight="8dp"/>
+            android:layout_marginRight="8dp" android:visibility="invisible"/>
     <Button
-            android:text="filters"
+            android:text="@string/tools_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/filtersButton" android:layout_marginBottom="8dp"
+            android:id="@+id/toolsButton" android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imgScroll"
             app:layout_constraintVertical_bias="1.0" android:visibility="invisible"
@@ -121,7 +133,7 @@
             android:layout_marginLeft="8dp" android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline12" android:layout_marginRight="8dp"/>
     <Button
-            android:text="Button"
+            android:text="@string/negative_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/firstFilter" app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="16dp"
@@ -132,7 +144,7 @@
             android:layout_marginEnd="8dp" app:layout_constraintEnd_toStartOf="@+id/guideline2"
             android:layout_marginRight="8dp" app:layout_constraintHorizontal_bias="0.4"/>
     <Button
-            android:text="Button"
+            android:text="@string/monochrome_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/secondFilter"
@@ -145,7 +157,7 @@
             android:layout_marginEnd="8dp" app:layout_constraintEnd_toStartOf="@+id/guideline12"
             android:layout_marginRight="8dp"/>
     <Button
-            android:text="Button"
+            android:text="@string/red_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/thirdFilter" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="20dp"
@@ -156,7 +168,7 @@
             android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="@+id/guideline12"
             android:layout_marginLeft="8dp" app:layout_constraintHorizontal_bias="0.842"/>
     <Button
-            android:text="back"
+            android:text="@string/back_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/backButton" app:layout_constraintEnd_toStartOf="@+id/guideline2"
@@ -167,7 +179,7 @@
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_bias="0.571"
             app:layout_constraintVertical_bias="1.0" android:visibility="invisible"/>
     <Button
-            android:text="return"
+            android:text="@string/return_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/returnButton" app:layout_constraintStart_toStartOf="@+id/guideline12"
@@ -177,9 +189,10 @@
             app:layout_constraintTop_toBottomOf="@+id/thirdFilter" app:layout_constraintHorizontal_bias="0.516"
             app:layout_constraintVertical_bias="1.0" android:visibility="invisible"/>
     <Button
-            android:text="Button"
+            android:text="@string/blur_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+<<<<<<< HEAD
             android:id="@+id/button3" app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp" android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
@@ -208,6 +221,15 @@
             android:layout_height="wrap_content" tools:layout_editor_absoluteY="119dp"
             tools:layout_editor_absoluteX="176dp" android:id="@+id/coordinates"/>
 =======
+=======
+            android:id="@+id/blurButton" app:layout_constraintStart_toStartOf="@+id/guideline2"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="@+id/toolsButton"
+            app:layout_constraintHorizontal_bias="0.525" app:layout_constraintVertical_bias="0.203"
+            app:layout_constraintEnd_toStartOf="@+id/guideline12" android:visibility="invisible"/>
+>>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
     <Button
             android:text="@string/scale_string"
             android:layout_width="wrap_content"
@@ -216,17 +238,21 @@
             android:layout_marginRight="8dp" app:layout_constraintStart_toStartOf="@+id/guideline12"
             android:layout_marginLeft="8dp" android:layout_marginStart="8dp" android:layout_marginTop="8dp"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.19999999" android:onClick="doScaling"/>
+            app:layout_constraintVertical_bias="0.19999999" android:onClick="doScaling" android:visibility="invisible"/>
     <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/scaleSpinner" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp" app:layout_constraintStart_toStartOf="@+id/guideline12"
             app:layout_constraintTop_toBottomOf="@+id/scaleButton" android:layout_marginLeft="8dp"
+<<<<<<< HEAD
             android:layout_marginStart="8dp" android:entries="@array/scales"/>
 <<<<<<< HEAD
 >>>>>>> a017cd3 (Nrls 2: x2, x3)
 =======
+=======
+            android:layout_marginStart="8dp" android:entries="@array/scales" tools:visibility="invisible"/>
+>>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
     <TextView
             android:text="TextView"
             android:layout_width="wrap_content"
@@ -236,10 +262,26 @@
             android:text="@string/unsharp_mask_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/unsharpMaskButton" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            android:id="@+id/unsharpMaskButton" android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginLeft="8dp" android:layout_marginStart="8dp" android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintVertical_bias="0.19" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2" android:visibility="invisible"/>
+    <Button
+            android:text="@string/rotate_string"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rotateButton" app:layout_constraintEnd_toStartOf="@+id/guideline2" android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="8dp" android:layout_marginStart="8dp" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
+<<<<<<< HEAD
             app:layout_constraintTop_toBottomOf="@+id/imgScroll"/>
 >>>>>>> 21bdac1 (Rls 8: unsharp masking)
+=======
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.100000024"
+            android:visibility="invisible"/>
+>>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
 </android.support.constraint.ConstraintLayout>
