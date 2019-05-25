@@ -28,17 +28,16 @@ import kotlin.math.min
 
 class MainActivity : AppCompatActivity() {
 
-    private val PERMISSION_CODE = 1000
-    private val IMAGE_PICK_CODE = 1000
-    private val IMAGE_CAPTURE_CODE = 1001
-    private var image_uri: Uri? = null
-    private var REQ_CODE_FOR_ACTION: Int = 0
+    private val permissionCode = 1000
+    private val imagePickCode = 1000
+    private val imageCaptureCode = 1001
+    private var imageURI: Uri? = null
+    private var reqCodeForAction: Int = 0
     private var initialHeight = 0
-    private var RETURN_BITMAP = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-    private var BACK_BITMAP = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-    private val edit = EditImage(BACK_BITMAP)
+    private var returnBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+    private var backBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+    private val edit = EditImage(backBitmap)
     private val actionBut = ActionsWithButtons()
-    private var MAIN_COUNTER = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,11 +74,12 @@ class MainActivity : AppCompatActivity() {
         blurButton.setOnClickListener { edit.blur(mainImage, coordinates) }
 >>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
         unsharpMaskButton.setOnClickListener { edit.unsharpMask(this, mainImage) }
-        returnButton.setOnClickListener { edit.returnImage(mainImage, RETURN_BITMAP) }
+        returnButton.setOnClickListener { edit.returnImage(mainImage, returnBitmap) }
         backButton.setOnClickListener {
-            BACK_BITMAP = edit.returnBackBitmap()
-            edit.returnImage(mainImage, BACK_BITMAP)
+            backBitmap = edit.returnBackBitmap()
+            edit.returnImage(mainImage, backBitmap)
         }
+        rotateButton.setOnClickListener { edit.rotateImage(mainImage) }
 
 <<<<<<< HEAD
 =======
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
     // SO NIGGAS THAT'S MY FUCKING CHECK FOR PERMISSIONS OK?
     private fun checkPermissionsForGallery(){
         // FOR GALLERY REQ CODE
-        REQ_CODE_FOR_ACTION = 2002
+        reqCodeForAction = 2002
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                 //permission denied
                 val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                 //show popup to request runtime permission
-                requestPermissions(permissions, PERMISSION_CODE)
+                requestPermissions(permissions, permissionCode)
             }
             else{
                 //permission already granted
@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkPermissionsForCamera(){
         // FOR CAMERA REQ CODE
-        REQ_CODE_FOR_ACTION = 2001
+        reqCodeForAction = 2001
 
         //if system os is Marshmallow or Above, we need to request runtime permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                 //permission was not enabled
                 val permission = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 //show popup to request permission
-                requestPermissions(permission, PERMISSION_CODE)
+                requestPermissions(permission, permissionCode)
             }
             else{
                 //permission already granted
@@ -145,12 +145,12 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         //called when user presses ALLOW or DENY from Permission Request Popup
         when(requestCode){
-            PERMISSION_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && REQ_CODE_FOR_ACTION == 2001) {
+            permissionCode -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && reqCodeForAction == 2001) {
                     //permission from popup was granted
                     openCamera()
                 }
-                else if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && REQ_CODE_FOR_ACTION == 2002) {
+                else if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && reqCodeForAction == 2002) {
                     //permission from popup was granted
                     pickImageFromGallery()
                 }
@@ -167,11 +167,11 @@ class MainActivity : AppCompatActivity() {
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
-        image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        imageURI = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         //camera intent
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
-        startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE)
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI)
+        startActivityForResult(cameraIntent, imageCaptureCode)
     }
 
     // OPEN YOUR GALLERY NIGGA
@@ -179,22 +179,26 @@ class MainActivity : AppCompatActivity() {
         //Intent to pick image
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        startActivityForResult(intent, IMAGE_PICK_CODE)
+        startActivityForResult(intent, imagePickCode)
     }
 
     // SAVE YOUR ASS IMAGE NIGGA
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //called when image was captured from camera intent
-        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
+        if (resultCode == Activity.RESULT_OK && requestCode == imagePickCode){
             mainImage.setImageURI(data?.data)
         }
-        else if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_CAPTURE_CODE){
+        else if (resultCode == Activity.RESULT_OK && requestCode == imageCaptureCode){
             //set image captured to image view
-            mainImage.setImageURI(image_uri)
+            mainImage.setImageURI(imageURI)
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         RETURN_BITMAP = (mainImage.drawable as BitmapDrawable).bitmap
+=======
+        returnBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+>>>>>>> f9f7205 (Fix 7: rotation works, warnings are gone (except of one lil piece of trash))
 
 <<<<<<< HEAD
 //        compressImage()
@@ -207,26 +211,6 @@ class MainActivity : AppCompatActivity() {
 >>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
         // SHOW BUTTON "FILTERS":
         toolsButton.visibility = View.VISIBLE
-    }
-
-
-    // IMAGE COMPRESSION
-    private fun compressImage() {
-        val reqHeight = 2000
-        val reqWidth = 2000
-        val compressCoefficient: Double
-        var bitmap = (mainImage.drawable as BitmapDrawable).bitmap
-
-        if (bitmap.width > reqWidth || bitmap.height > reqHeight) {
-            compressCoefficient = min(bitmap.width.toDouble() / reqWidth.toDouble(),
-                bitmap.height.toDouble() / reqHeight.toDouble())
-
-            if (compressCoefficient > 1) {
-                bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.width.toDouble() / compressCoefficient).toInt(),
-                    (bitmap.height.toDouble() / compressCoefficient).toInt(), false)
-                mainImage.setImageBitmap(bitmap)
-            }
-        }
     }
 
     // SAVING YOUR EDITED IMAGE TO A SPECIFIC FOLDER

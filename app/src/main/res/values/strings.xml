@@ -56,5 +56,9 @@
     <string name="red_string">Red</string>
     <string name="back_string">Back</string>
     <string name="return_string">Return</string>
+<<<<<<< HEAD
 >>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
+=======
+    <string name="error_string">Error</string>
+>>>>>>> f9f7205 (Fix 7: rotation works, warnings are gone (except of one lil piece of trash))
 </resources>
