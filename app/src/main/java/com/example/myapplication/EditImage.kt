@@ -5,12 +5,9 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
-import kotlin.math.roundToInt
 import android.view.View
 import android.widget.Toast
-import kotlin.math.sqrt
-import kotlin.math.max
-import kotlin.math.min
+import kotlin.math.*
 
 class EditImage(BTMP: Bitmap) {
     var BACK_BITMAP = BTMP
@@ -263,31 +260,40 @@ class EditImage(BTMP: Bitmap) {
     // Fucking rotation doesn't work
     fun rotateImage(mainImage: ImageView){
         var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap // создаем битмап из imageview
-        val height = oldBitmap.height // высота картинки и битмапа
-        val width = oldBitmap.width // ширина
+        var height = oldBitmap.height // высота картинки и битмапа
+        var width = oldBitmap.width // ширина
         var oldBittmapPixelsArray = IntArray(width * height) // массив его пикселей (пока просто массив, не двумерный, и пока он пустой, то есть ничего не содержит, т.е. пока это просто массив длиной width * height)
         var newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)  // ноздаем новый битмап (пока пустой, но шириной и высотой такой же, как и прошлый)
         var newBitmapPixelsArray = oldBittmapPixelsArray // создаем массив пикселей нового битмапа
         oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height) // заполняем старый массив пикселей пикселями из старого битмапа
 // а тут мы первращаем массив пикселей в матрицу пикселей
         val array = oldBittmapPixelsArray // массив-донор - массив пикселей старого битмапа
-        val matrix = Array(height) { IntArray(width) } //будущая матрица
+        var matrix = Array(height) { IntArray(width) } //будущая матрица
         var count = 0
         for (i in matrix.indices) {
             for (j in 0 until matrix[i].size) {
                 matrix[i][j] = array[count++] //перенос элементов из донора в матрицу
             }
         }
-        val newMatrix = Array(width) { IntArray(height) }
+        var newMatrix = Array(width) { IntArray(height) }
 
+        for (rw in 0 until height)
+            for (cl in 0 until width) {
+                newMatrix[width - 1 - cl][rw] = matrix[rw][cl]
+            }
 
-//        for (row in 0 until height){
-//            for (column in 0 until width) {
-//                newBitmapPixelsArray[(row * width) + column] = matrix[row][column] // забиваем новый массив пикселей по формуле соответствующими значениями из матрицы
-//            }
-//        }
-//        newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height) // добавляем полученные пиксели в новый битмап
-//        mainImage.setImageBitmap(newBitmap) // ставим новый битмап в imageview
+        val tmp: Int
+        tmp = height
+        height = width
+        width = tmp
+
+        for (row in 0 until height){
+            for (column in 0 until width) {
+                newBitmapPixelsArray[(row * width) + column] = newMatrix[row][column] // from matrix to new empty pixels array
+            }
+        }
+        newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height) // здесь вылет
+//        mainImage.setImageBitmap(newBitmap)
     }
 
     // DAMN BLUR
@@ -427,5 +433,43 @@ class EditImage(BTMP: Bitmap) {
         newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
         mainImage.setImageBitmap(newBitmap)
         Toast.makeText(context, "Applied", Toast.LENGTH_SHORT).show()
+    }
+
+
+
+    // BILINEAR LITTLE SHIT
+}
+class Rotate(matrix: Array<IntArray>, height: Int, width: Int){
+    private var noRows = height
+    private var noCols = width
+    private var element = matrix
+
+
+    fun getValue(row: Int, col: Int): Int {
+        return this.element[row][col]
+    }
+
+    fun setValue(row: Int, col: Int, value: Int) {
+        this.element[row][col] = value
+    }
+
+    private fun cangeRowsCols() {
+        val tmp: Int
+        tmp = this.noRows
+        this.noRows = this.noCols
+        this.noCols = tmp
+    }
+
+    fun rotate90(): Array<IntArray> {
+        val rotMat = Array(this.noCols) { IntArray(this.noRows) }
+
+        for (rw in 0 until this.noRows)
+            for (cl in 0 until this.noCols) {
+                rotMat[this.noCols - 1 - cl][rw] = this.element[rw][cl]
+            }
+
+        this.element = rotMat
+        cangeRowsCols()
+        return element
     }
 }

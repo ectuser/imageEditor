@@ -1,0 +1,205 @@
+//import android.graphics.Bitmap
+//import java.util.Collections.rotate
+//import kotlin.math.sign
+//
+//inner class Point2D() {
+//        var x: Double = 0.0
+//        var y: Double = 0.0
+//
+//        constructor(_x: Double, _y: Double) : this() {
+//            x = _x
+//            y = _y
+//        }
+//
+//        }
+//
+//func bilinearFilter(bMap:Bitmap, SourceValues: Array<Point2D>) :Bitmap   				//ГЛАВНЫЙ ФУНКЦИЯ
+//{
+//	var A = Array(3, { DoubleArray(3) })
+//	var Xmat = Array(3, { DoubleArray(3) })
+//	var Tmat = Array(3, { DoubleArray(3) })
+//
+//	A[0][0] = SourceValues[0].x
+//	A[0][1] = SourceValues[1].x
+//	A[0][2] = SourceValues[2].x
+//
+//	A[1][0] = SourceValues[0].y
+//	A[1][1] = SourceValues[1].y
+//	A[1][2] = SourceValues[2].y
+//
+//	A[2][0] = 1.0
+//	A[2][1] = 1.0
+//	A[2][2] = 1.0
+//
+//	Xmat[0][0] = SourceValues[3].x
+//	Xmat[0][1] = SourceValues[4].x
+//	Xmat[0][2] = SourceValues[5].x
+//
+//	Xmat[1][0] = SourceValues[3].y
+//	Xmat[1][1] = SourceValues[4].y
+//	Xmat[1][2] = SourceValues[5].y
+//
+//	Xmat[2][0] = 1.0
+//	Xmat[2][1] = 1.0
+//	Xmat[2][2] = 1.0
+//	val Ainv = FindInverse(A)
+//	Tmat = Xmat*Ainv
+//
+//
+//	var angle:Double = atan2(Tmat[1][0],Tmat[1][1])
+//	var sx:Double = abs(sign(Tmat[0][0])*sqrt(Tmat[0][0]*Tmat[0][0] + Tmat[0][1]*Tmat[0][1]))
+//	var sy:Double = abs(sign(Tmat[1][1])*sqrt(Tmat[1][0]*Tmat[1][0]+Tmat[1][1]*Tmat[1][1]))
+//
+//	// ЗДЕСЬ ШПИЛИ ВИЛИ ПОВОРОТ
+//	bMap = rotate(angle * 180 / PI,bMap)
+//	return bilinear_interpolate(bMap,sx,sy)
+//
+//}
+//
+//	fun get(tex: IntArray, x: Int, y: Int, width: Int): Int {
+//
+//        if (tex.size > x * width + y && x*width+y >= 0)
+//            return tex[x * width + y]
+//        else
+//            return 0
+//    }
+//
+//    fun get_pixel(tex: IntArray, u: Double, v: Double, width: Int, height: Int, new_width: Int, new_height: Int): Int {
+//        var u = u
+//        var v = v
+//        u = u * height - 0.5
+//        v = v * width - 0.5
+//        val x: Int = Math.floor(u).toInt()
+//        var y: Int = Math.floor(v).toInt()
+//        if (y < 0) {
+//            y = 0
+//        }
+//        val u_ratio = u - x
+//        val v_ratio = v - y
+//        val u_opposite = 1 - u_ratio
+//        val v_opposite = 1 - v_ratio
+//        val A = Math.floor(
+//            ((get(tex, x, y, width) shr 24 and 0xff) * u_opposite + (get(
+//                tex,
+//                x + 1,
+//                y,
+//                width
+//            ) shr 24 and 0xff) * u_ratio) * v_opposite + ((get(
+//                tex,
+//                x,
+//                y + 1,
+//                width
+//            ) shr 24 and 0xff) * u_opposite + (get(tex, x + 1, y + 1, width) shr 24 and 0xff) * u_ratio) * v_ratio
+//        )
+//            .toInt()
+//        val R = Math.floor(
+//            ((get(tex, x, y, width) shr 16 and 0xff) * u_opposite + (get(
+//                tex,
+//                x + 1,
+//                y,
+//                width
+//            ) shr 16 and 0xff) * u_ratio) * v_opposite + ((get(
+//                tex,
+//                x,
+//                y + 1,
+//                width
+//            ) shr 16 and 0xff) * u_opposite + (get(tex, x + 1, y + 1, width) shr 16 and 0xff) * u_ratio) * v_ratio
+//        )
+//            .toInt()
+//        val G = Math.floor(
+//            ((get(tex, x, y, width) shr 8 and 0xff) * u_opposite + (get(
+//                tex,
+//                x + 1,
+//                y,
+//                width
+//            ) shr 8 and 0xff) * u_ratio) * v_opposite + ((get(tex, x, y + 1, width) shr 8 and 0xff) * u_opposite + (get(
+//                tex,
+//                x + 1,
+//                y + 1,
+//                width
+//            ) shr 8 and 0xff) * u_ratio) * v_ratio
+//        )
+//            .toInt()
+//        val B = Math.floor(
+//            ((get(tex, x, y, width) and 0xff) * u_opposite + (get(
+//                tex,
+//                x + 1,
+//                y,
+//                width
+//            ) and 0xff) * u_ratio) * v_opposite + ((get(tex, x, y + 1, width) and 0xff) * u_opposite + (get(
+//                tex,
+//                x + 1,
+//                y + 1,
+//                width
+//            ) and 0xff) * u_ratio) * v_ratio
+//        )
+//            .toInt()
+//        return A and 0xff shl 24 or (R and 0xff shl 16) or (G and 0xff shl 8) or (B and 0xff)
+//    }
+//
+//    private fun bilinear_interpolate(bmp: Bitmap, scale_x:Double, scale_y:Double) :Bitmap {
+//
+//        val height = bmp.height // высота картинки и битмапа
+//        val width = bmp.width // ширина
+//        scale_x
+//        val new_height = (height * scale_y).toInt()
+//        val new_width = (width *scale_x).toInt()
+//        var oldBitmapPixelsArray =
+//            IntArray(width * height) // массив его пикселей (пока просто массив, не двумерный, и пока он пустой, то есть ничего не содержит, т.е. пока это просто массив длиной width * height)
+//        var newBitmap = Bitmap.createBitmap(new_width, new_height, Bitmap.Config.ARGB_8888)
+//        var newBitmapPixelsArray = IntArray(new_width * new_height) // создаем массив пикселей нового битмапа
+//        bmp.getPixels( oldBitmapPixelsArray,0, width,0, 0,  width, height) // заполняем старый массив пикселей пикселями из старого битмапа
+//        for (row in 0 until new_height) {
+//            for (column in 0 until new_width) {
+//                val color = oldBitmapPixelsArray
+//                val u: Double = (row.toDouble() - 0.5) / (new_height)
+//                val v: Double = (column.toDouble() -0.5) / (new_width)
+//                newBitmapPixelsArray[row * new_width + column] = get_pixel(oldBitmapPixelsArray, u, v, width, height, new_width, new_height)
+//            }
+//        }
+//
+//        newBitmap.setPixels(
+//            newBitmapPixelsArray,
+//            0,
+//            new_width,
+//            0,
+//            0,
+//            new_width,
+//            new_height
+//        ) // добавляем полученные пиксели в новый битмап
+//        return newBitmap
+//    }
+//}
+//
+//private fun FindInverse(mat: Array<DoubleArray>): Array<DoubleArray> {
+//        var det: Double =
+//            mat[0][0] * ((mat[1][1] * mat[2][2]) - (mat[2][1] * mat[1][2])) - mat[0][1] * (mat[1][0] * mat[2][2] - mat[2][0] * mat[1][2]) + mat[0][2] * (mat[1][0] * mat[2][1] - mat[2][0] * mat[1][1])
+//        if (det == 0.0) {
+//            return Array(3, { DoubleArray(3) })
+//        }
+//        var matT = Array(3, { DoubleArray(3) })
+//        var Adj = Array(3, { DoubleArray(3) })
+//        for (i in 0 until 3) {
+//            for (j in 0 until 3) {
+//                matT[i][j]=mat[j][i]
+//            }
+//        }
+//
+//        Adj[0][0] = matT[1][1]*matT[2][2]-matT[1][2]*matT[2][1]
+//        Adj[0][1] = -matT[1][0]*matT[2][2]+matT[1][2]*matT[2][0]
+//        Adj[0][2] = matT[1][0]*matT[2][1]-matT[1][1]*matT[2][0]
+//        Adj[1][0] = -matT[0][1]*matT[2][2] + matT[0][2]*matT[2][1]
+//        Adj[1][1] = matT[0][0]*matT[2][2] - matT[0][2]*matT[2][0]
+//        Adj[1][2] = -matT[0][0]*matT[2][1]+matT[0][1]*matT[2][0]
+//        Adj[2][0] = matT[0][1]*matT[1][2] - matT[1][1]*matT[0][2]
+//        Adj[2][1] = -matT[0][0] * matT[1][2] + matT[0][2]*matT[1][0]
+//        Adj[2][2] = matT[0][0]*matT[1][1] - matT[0][1]*matT[1][0]
+//
+//        for (i in 0 until 3) {
+//            for (j in 0 until 3) {
+//            Adj[i][j]/=det
+//            }
+//
+//            }
+//        return Adj
+//    }
