@@ -60,14 +60,19 @@ class MainActivity : AppCompatActivity() {
         toolsButton.setOnClickListener{ actionBut.filterClick(firstFilter, secondFilter, thirdFilter,
             cameraButton, imageButton, backButton, returnButton, rotateButton, saveButton, zoomButton,
 <<<<<<< HEAD
+<<<<<<< HEAD
             unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner) }
 =======
             unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner, bfButton) }
 >>>>>>> 4a683c2 (FINAL V3)
+=======
+            unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner, bfButton, coefficient) }
+>>>>>>> 763fd77 (LAST FIX)
         // NEGATIVE FILTER
         firstFilter.setOnClickListener { edit.filter(mainImage, 1) }
         secondFilter.setOnClickListener { edit.filter(mainImage, 2) }
         thirdFilter.setOnClickListener { edit.filter(mainImage, 3) }
+<<<<<<< HEAD
 <<<<<<< HEAD
 //        button3.setOnClickListener { edit.rotateImage(mainImage) }
 <<<<<<< HEAD
@@ -76,6 +81,21 @@ class MainActivity : AppCompatActivity() {
         blurButton.setOnClickListener { edit.blur(mainImage, coordinates) }
 >>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
         unsharpMaskButton.setOnClickListener { edit.unsharpMask(this, mainImage) }
+=======
+        var blurCounter = 0
+        blurButton.setOnClickListener {
+            if (blurCounter % 2 == 0) {
+                Toast.makeText(this, "Blur activated", Toast.LENGTH_SHORT).show()
+                edit.blur(mainImage)
+            }
+            else {
+                Toast.makeText(this, "Blur disabled", Toast.LENGTH_SHORT).show()
+                mainImage.setOnTouchListener(null)
+            }
+            blurCounter++
+        }
+        unsharpMaskButton.setOnClickListener { edit.unsharpMask(this, mainImage, coefficient) }
+>>>>>>> 763fd77 (LAST FIX)
         returnButton.setOnClickListener { edit.returnImage(mainImage, returnBitmap) }
         backButton.setOnClickListener {
             backBitmap = edit.returnBackBitmap()
@@ -107,9 +127,13 @@ class MainActivity : AppCompatActivity() {
 =======
         zoomSpinner.visibility = View.INVISIBLE
         scaleSpinner.visibility = View.INVISIBLE
+<<<<<<< HEAD
 >>>>>>> 6c1f321 (Nrls 8: more activities and transitions)
 =======
 >>>>>>> 30d2864 (Commit for merge)
+=======
+        coefficient.visibility = View.INVISIBLE
+>>>>>>> 763fd77 (LAST FIX)
     }
 
     // SO GUYS THAT'S MY F*CKING CHECK FOR PERMISSIONS OK?
