@@ -6,15 +6,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.support.v4.app.ActivityCompat.requestPermissions
-import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v4.content.ContextCompat.checkSelfPermission
-import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
 
 class OpenImage{
-    val PERMISSION_CODE = 1000
-    val IMAGE_PICK_CODE = 1000
+    private val permissionCode = 1000
+    private val imagePickCode = 1000
 
     fun checkPermissionsForGallery(context : Context){
         // FOR GALLERY REQ CODE
@@ -22,9 +20,9 @@ class OpenImage{
             if (checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED){
                 //permission denied
-                val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE);
+                val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                 //show popup to request runtime permission
-                requestPermissions(MainActivity(), permissions, PERMISSION_CODE);
+                requestPermissions(MainActivity(), permissions, permissionCode)
             }
             else{
                 //permission already granted
@@ -42,7 +40,7 @@ class OpenImage{
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
 //        val bundleOptions = Bundle()
-        AppCompatActivity().startActivityForResult(intent, IMAGE_PICK_CODE)
+        AppCompatActivity().startActivityForResult(intent, imagePickCode)
     }
 
 }

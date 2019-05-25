@@ -50,4 +50,5 @@
     <string name="red_string">Red</string>
     <string name="back_string">Back</string>
     <string name="return_string">Return</string>
+    <string name="error_string">Error</string>
 </resources>
