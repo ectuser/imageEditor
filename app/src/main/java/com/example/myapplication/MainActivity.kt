@@ -22,8 +22,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.DateFormat.getDateTimeInstance
 import java.util.*
-import kotlin.math.min
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -61,7 +59,11 @@ class MainActivity : AppCompatActivity() {
         // SHOW FILTERS BUTTONS
         toolsButton.setOnClickListener{ actionBut.filterClick(firstFilter, secondFilter, thirdFilter,
             cameraButton, imageButton, backButton, returnButton, rotateButton, saveButton, zoomButton,
+<<<<<<< HEAD
             unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner) }
+=======
+            unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner, bfButton) }
+>>>>>>> 4a683c2 (FINAL V3)
         // NEGATIVE FILTER
         firstFilter.setOnClickListener { edit.filter(mainImage, 1) }
         secondFilter.setOnClickListener { edit.filter(mainImage, 2) }
@@ -79,8 +81,24 @@ class MainActivity : AppCompatActivity() {
             backBitmap = edit.returnBackBitmap()
             edit.returnImage(mainImage, backBitmap)
         }
+<<<<<<< HEAD
         rotateButton.setOnClickListener { edit.rotateImage(mainImage) }
 <<<<<<< HEAD
+=======
+        rotateButton.setOnClickListener { edit.rotateImage(mainImage, this) }
+        var bilCounter = 0
+        bfButton.setOnClickListener {
+            if (bilCounter % 2 == 0) {
+                bil.pickPoints(mainImage, this)
+                Toast.makeText(this, "BF activated", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(this, "BF disabled", Toast.LENGTH_SHORT).show()
+                mainImage.setOnTouchListener(null)
+            }
+            bilCounter++
+        }
+>>>>>>> 4a683c2 (FINAL V3)
 
 <<<<<<< HEAD
 =======
