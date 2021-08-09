@@ -197,4 +197,9 @@
             app:layout_constraintHorizontal_bias="0.007" app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/guideline11"
             app:layout_constraintVertical_bias="0.062"/>
+    <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" tools:layout_editor_absoluteY="119dp"
+            tools:layout_editor_absoluteX="176dp" android:id="@+id/coordinates"/>
 </android.support.constraint.ConstraintLayout>
